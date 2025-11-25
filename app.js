@@ -56,3 +56,11 @@ app.get("/listings", async (req, res)=>{
     // as veiw has been set therefore express will find vies directory and specified file will be rendered as ejs by default.
     res.render("listings/index.ejs", {listings});    
 })
+
+// Read or Show Api
+app.get("/listings/:id", async (req, res)=>{
+    let {id} = req.params;
+    let listing  = await Listing.findById(id);
+    // console.log(listing);
+    res.render("listings/show.ejs", {listing});
+})
