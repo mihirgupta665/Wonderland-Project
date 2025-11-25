@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const path = require("path");
+const Listing = require("./models/listing.js");
 
 const app = express();
 
@@ -30,3 +31,18 @@ app.get("/", (req,res)=>{
     res.send("Server is Working Fine!!!");
 })
 
+app.get("/listingTest", (req,res)=>{
+    let testList = new Listing({
+        title : "My testing Villa",
+        description : "12 BHK with swimming pool",
+        price : 12000,
+        location : "Jalandhar"
+    });
+    testList.save().then((res)=>{
+        console.log(res);
+    }).catch((err)=>{
+        console.log("Error in inserting testing villa to database : "+err);
+    });
+    // sample data insterted successfuly so res.send function is used at last to display the message
+    res.send("Sucess!!  : Testing Sample Data inserted into database ");   
+});

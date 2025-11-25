@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const listings = new Schema({
+const listingSchema = new Schema({
     title : {
         type : String,
         required : true
@@ -23,4 +23,6 @@ const listings = new Schema({
         required : true
     }
 });
-module.exports = listings;
+
+const Listing = mongoose.model("Listing", listingSchema)        // creating the model or collection with corresponding created Schema
+module.exports = Listing;       // exporting the created model or collection.
