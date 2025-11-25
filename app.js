@@ -27,10 +27,12 @@ main().then((res)=>{
     console.log("Error in connecting mongodb database : "+err);
 });
 
+// home api
 app.get("/", (req,res)=>{
     res.send("Server is Working Fine!!!");
 })
 
+// testing api
 app.get("/listingTest", (req,res)=>{
     let testList = new Listing({
         title : "My testing Villa",
@@ -47,3 +49,10 @@ app.get("/listingTest", (req,res)=>{
     // sample data insterted successfuly so res.send function is used at last to display the message
     res.send("Sucess!!  : Testing Sample Data inserted into database ");   
 });
+
+// index api
+app.get("/listings", async (req, res)=>{
+    let listings = await Listing.find({});
+    // as veiw has been set therefore express will find vies directory and specified file will be rendered as ejs by default.
+    res.render("listings/index.ejs", {listings});    
+})
