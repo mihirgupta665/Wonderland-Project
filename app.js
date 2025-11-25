@@ -36,7 +36,8 @@ app.get("/listingTest", (req,res)=>{
         title : "My testing Villa",
         description : "12 BHK with swimming pool",
         price : 12000,
-        location : "Jalandhar"
+        location : "Jalandhar",
+        country: "India"
     });
     testList.save().then((res)=>{
         console.log(res);

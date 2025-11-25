@@ -5,23 +5,24 @@ const listingSchema = new Schema({
         type : String,
         required : true
     },
-    description : {
-        type : String
+    description : String,
+    image: {
+        filename: {
+            type: String,
+            default: "listingimage"
+        },
+        url: {
+            type: String,
+            default: "https://images.pexels.com/photos/31817157/pexels-photo-31817157.jpeg?cs=srgb&dl=pexels-ahmetcotur-31817157.jpg&fm=jpg",
+            set: (v) =>
+                v === ""
+                    ? "https://images.pexels.com/photos/31817157/pexels-photo-31817157.jpeg?cs=srgb&dl=pexels-ahmetcotur-31817157.jpg&fm=jpg"
+                    : v,
+        }
     },
-    image : {
-        type : String,
-        default: "https://images.pexels.com/photos/31817157/pexels-photo-31817157.jpeg?cs=srgb&dl=pexels-ahmetcotur-31817157.jpg&fm=jpg",
-        set: (v) => v === "" ?"https://images.pexels.com/photos/31817157/pexels-photo-31817157.jpeg?cs=srgb&dl=pexels-ahmetcotur-31817157.jpg&fm=jpg"
-                             : v,
-    },
-    price : {
-        type : Number,
-        required : true
-    },
-    location : {
-        type : String,
-        required : true
-    }
+    price :  Number,
+    location : String,
+    country: String,
 });
 
 const Listing = mongoose.model("Listing", listingSchema)        // creating the model or collection with corresponding created Schema
