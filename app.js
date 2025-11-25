@@ -57,6 +57,17 @@ app.get("/listings", async (req, res)=>{
     res.render("listings/index.ejs", {listings});    
 })
 
+// new listing
+app.get("/listings/new", (req,res)=>{
+    res.render("listings/new.ejs");
+});
+app.post("/listings", async (req,res)=>{
+    let {listing} = req.body;
+    let newlisting = await new Listing(listing);
+    await newlisting.save();
+    res.redirect("/listings");
+});
+
 // Read or Show Api
 app.get("/listings/:id", async (req, res)=>{
     let {id} = req.params;
@@ -64,3 +75,4 @@ app.get("/listings/:id", async (req, res)=>{
     // console.log(listing);
     res.render("listings/show.ejs", {listing});
 })
+
