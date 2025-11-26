@@ -3,11 +3,12 @@
 <!-- are component are passed in the layout page as components -->
 <body>
     <h1>All Listings</h1>
-    <form method="get" action="/listings/new">
+    <!-- <form method="get" action="/listings/new">
         <button>Add new listing</button>
-    </form>
+    </form> -->
     <ul>
     <% for(let listing of listings){ %>
+        <li><a href="/listings/<%=listing._id%>"><%= listing.title %></a></li>
         <li><a href="/listings/<%=listing._id%>"><%= listing.title %></a></li>
     <% } %>
     </ul>

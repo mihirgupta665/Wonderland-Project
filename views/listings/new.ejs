@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Listing</title>
-</head>
+<% layout("layouts/boilerplate") %>
 <body>
-    <h2>New Listing : </h2>
+    <h2>Create new New Listing : </h2>
     <form method="post" action="/listings">
         <input type="text" placeholder="Enter the Title" name="listing[title]">
         <br>
@@ -29,4 +23,3 @@
         <button>Save</button>
     </form>
 </body>
-</html>
