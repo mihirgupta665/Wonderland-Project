@@ -91,3 +91,10 @@ app.put("/listings/:id", async (req,res)=>{
     await Listing.findByIdAndUpdate(id, req.body.listing)   //deconstructing the listing object using ...req.body.listing
     res.redirect(`/listings/${id}`);
 });
+
+app.delete("/listings/:id", async (req, res)=>{
+    let {id} = req.params;
+    let deletedListing = await Listing.findByIdAndDelete(id);
+    console.log(deletedListing);
+    res.redirect("/listings");
+})
