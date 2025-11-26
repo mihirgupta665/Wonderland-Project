@@ -80,7 +80,14 @@ app.get("/listings/:id", async (req, res)=>{
 app.get("/listings/:id/edit", async (req, res)=>{
     let { id } = req.params;
     let listing = await Listing.findById(id);
-    console.log(listing);
+    // console.log(listing);
     res.render("listings/edit.ejs", { listing });
 })
 
+app.put("/listings/:id", async (req,res)=>{
+    let { id } = req.params;
+    //with destructing of object its properties becomes direct keys and value
+    console.log(req.body.listing)
+    await Listing.findByIdAndUpdate(id, req.body.listing)   //deconstructing the listing object using ...req.body.listing
+    res.redirect(`/listings/${id}`);
+});

@@ -16,7 +16,7 @@
         <textarea name="listing[description]"> <%= listing.description %> </textarea>
         <br>
         <br>
-        <input type="text" value="<%=listing.image.url%>" name="listing[image]">
+        <input type="text" value="<%=listing.image.url%>" name="listing[image][url]">
         <br>
         <br>
         <input type="number" value="<%=listing.price%>" name="listing[price]">
@@ -28,7 +28,7 @@
         <input type="text" value="<%=listing.country%>" name="listing[country]">
         <br>
         <br>
-        <button>Save</button>
+        <button>Update</button>
     </form>
 </body>
 
