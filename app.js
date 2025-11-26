@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const path = require("path");
 const Listing = require("./models/listing.js");
+const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled template
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(methodOverride("_method"));
 app.listen(8080, ()=>{
     console.log("Listening through port  : "+8080);
 })
+
+app.engine("ejs", ejsMate);
 
 async function main(){
     await mongoose.connect("mongodb://127.0.0.1:27017/wonderland");
