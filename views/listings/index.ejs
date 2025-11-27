@@ -10,16 +10,18 @@
 
         <div class="row row-cols-lg-3 row-col-md-2 row-cols-sm-1">
             <% for(let listing of listings){ %>
-                <div class="card col" style="width: 20rem;">
-                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing">
-                    <div class="card-body">
-                        <p class="card-text">
-                            <%= listing.title %>
-                            <br>
-                            &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
-                        </p>
+                <a href="/listings/<%=listing._id%>">
+                    <div class="card col" >
+                        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing" style="height: 20rem;">
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b><%= listing.title %></b>
+                                <br>
+                                &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+                            </p>
+                        </div>
                     </div>
-                </div>
+                </a>
             <% } %>
         </div>
 
