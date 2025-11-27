@@ -1,17 +1,27 @@
 <!-- we want layout so will write layout("path(after view directory, as already specified)")-->
-<% layout("layouts/boilerplate") %>    
-<!-- are component are passed in the layout page as components -->
-<body>
-    <h1>All Listings</h1>
-    <!-- <form method="get" action="/listings/new">
+<% layout("layouts/boilerplate") %>
+    <!-- are component are passed in the layout page as components -->
+
+    <body>
+        <h1>All Listings</h1>
+        <!-- <form method="get" action="/listings/new">
         <button>Add new listing</button>
     </form> -->
-    <ul>
-    <% for(let listing of listings){ %>
-        <li><a href="/listings/<%=listing._id%>"><%= listing.title %></a></li>
-        <li><a href="/listings/<%=listing._id%>"><%= listing.title %></a></li>
-    <% } %>
-    </ul>
-</body>
+
+        <div class="row row-cols-lg-3 row-col-md-2 row-cols-sm-1">
+            <% for(let listing of listings){ %>
+                <div class="card col" style="width: 20rem;">
+                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <%= listing.title %>
+                            <br>
+                            &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+                        </p>
+                    </div>
+                </div>
+            <% } %>
+        </div>
 
 
+    </body>
