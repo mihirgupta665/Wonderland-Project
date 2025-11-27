@@ -1,33 +1,53 @@
 <% layout("layouts/boilerplate") %>
-<body>
-    <h2>Create new New Listing : </h2>
-    <form method="post" action="/listings">
-        <div>
-            <label for="title" class="form-label">Title : </label>
-            <input type="text" placeholder="Enter the Title" name="listing[title]" class="form-control">
+
+    <body>
+        <div class="row">
+            <!-- col-n : by default cols are 12 which are entirly occpied so we need to reduce it so that could take specied col space -->
+            <!-- offset-2 is used to give spacing from the left side -->
+            <div class="col-8 offset-2">
+              <br>
+              <br>
+                <h2>Create new New Listing : </h2>
+                <form method="post" action="/listings">
+                    <div class="mb-3">
+                        <!-- form-label : is used to add styling label  -->
+                        <!-- form-cotrol : is used to add styling in input  -->
+                        <label for="title" class="form-label">Title : </label>
+                        <input type="text" placeholder="Enter the Title" name="listing[title]" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description : </label>
+                        <textarea placeholder="Enter the Description" name="listing[description]"
+                            class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image.url" class="form-label">Image Link : </label>
+                        <input type="text" placeholder="Enter the Image URL" name="listing[image][url]"
+                            class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price : </label>
+                        <input type="number" placeholder="Enter the Price" name="listing[price]" class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="location" class="form-label">Location : </label>
+                                <input type="text" placeholder="Enter the Location" name="listing[location]"
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="country" class="form-label">Country : </label>
+                                <input type="text" placeholder="Enter the Country" name="listing[country]"
+                                    class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-dark mb-3">Save</button>
+                </form>
+            </div>
         </div>
-        <div>
-            <label for="description" class="form-label">Description : </label>
-            <textarea placeholder="Enter the Description" name="listing[description]" class="form-control"></textarea>
-        </div>
-        <div>
-            <label for="image.url" class="form-label">Image Link : </label>
-            <input type="text" placeholder="Enter the Image URL" name="listing[image][url]" class="form-control">
-        </div>   
-        <div>
-            <label for="price" class="form-label">Price : </label>
-            <input type="number" placeholder="Enter the Price" name="listing[price]" class="form-control">
-        </div>
-        <div>
-            <label for="location" class="form-label">Location : </label>
-            <input type="text" placeholder="Enter the Location" name="listing[location]" class="form-control">
-        </div>
-        <div>
-            <label for="country" class="form-label">Country : </label>
-            <input type="text" placeholder="Enter the Country" name="listing[country]" class="form-control">
-        </div>
-        <br>
-        <br>
-        <button>Save</button>
-    </form>
-</body>
+    </body>
