@@ -52,7 +52,7 @@ body{
 }
 
 .card{
-    /* border: none !important; */
+    border: none !important;
     margin-bottom : 2rem;
 }
 .card-img-top{
@@ -64,5 +64,25 @@ body{
     padding:0 !important;
 }
 
+.listing-link{
+    text-decoration: none;
+    color : #222222;
+}
+.listing-link:hover{
+    color : inherit;
+}
+.listing-link:visited{
+    color : inherit;
+}
 
+.card-img-overlay{
+    opacity:0;
+}
+.card-img-overlay:hover{
+    opacity:0.1;
+    background-color: black;
+    border-radius:1.4rem;
+    
+
+}
 

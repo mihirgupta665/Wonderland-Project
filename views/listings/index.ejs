@@ -10,9 +10,11 @@
 
         <div class="row row-cols-lg-3 row-col-md-2 row-cols-sm-1">
             <% for(let listing of listings){ %>
-                <a href="/listings/<%=listing._id%>">
+                <a href="/listings/<%=listing._id%>" class="listing-link">
                     <div class="card col" >
                         <img src="<%= listing.image.url %>" class="card-img-top" alt="listing" style="height: 20rem;">
+                        <!-- card-img-overlay : if one want to add text or icon above images we could use this image overlap property-->
+                        <div class="card-img-overlay"></div>
                         <div class="card-body">
                             <p class="card-text">
                                 <b><%= listing.title %></b>
