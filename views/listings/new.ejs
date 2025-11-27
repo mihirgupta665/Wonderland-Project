@@ -4,14 +4,12 @@
         <div class="row">
             <!-- col-n : by default cols are 12 which are entirly occpied so we need to reduce it so that could take specied col space -->
             <!-- offset-2 is used to give spacing from the left side -->
-            <div class="col-8 offset-2">
-              <br>
-              <br>
+            <div class="col-8 offset-2 mt-3">
                 <h2>Create new New Listing : </h2>
                 <form method="post" action="/listings">
                     <div class="mb-3">
                         <!-- form-label : is used to add styling label  -->
-                        <!-- form-cotrol : is used to add styling in input  -->
+                        <!-- form-control : is used to add styling in input  -->
                         <label for="title" class="form-label">Title : </label>
                         <input type="text" placeholder="Enter the Title" name="listing[title]" class="form-control">
                     </div>
@@ -46,7 +44,7 @@
                         </div>
                     </div>
                     <br>
-                    <button class="btn btn-dark mb-3">Save</button>
+                    <button class="btn btn-dark mb-3 add-btn">Save</button>
                 </form>
             </div>
         </div>

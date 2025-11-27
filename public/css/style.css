@@ -3,6 +3,12 @@ body{
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+    display: flex;
+    flex-direction: column;
+    min-height:100vh;
+}
+.container{
+    flex:1;
 }
 
 .navbar{
@@ -82,6 +88,16 @@ body{
     opacity:0.1;
     background-color: black;
     border-radius:1.4rem;
+}
+
+.add-btn{
+    background-color:#fe242d !important;
+    border : none !important;
+}
+
+.edit-btn{
+    background-color: #fe242d !important;
+    border: none !important;
 }
 
 
