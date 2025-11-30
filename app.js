@@ -4,6 +4,7 @@ const methodOverride = require("method-override");
 const path = require("path");
 const Listing = require("./models/listing.js");
 const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled template
+const asyncWrap = require("./utility/asyncWrap.js");
 
 const app = express();
 
@@ -65,12 +66,12 @@ app.get("/listings/new", (req,res)=>{
     res.render("listings/new.ejs");
 });
 // post listing
-app.post("/listings", async (req,res)=>{
+app.post("/listings", asyncWrap(async (req,res)=>{
     let {listing} = req.body;
     let newlisting = await new Listing(listing);
     await newlisting.save();
     res.redirect("/listings");
-});
+}));
 
 // Read or Show Api
 app.get("/listings/:id", async (req, res)=>{
@@ -100,6 +101,11 @@ app.delete("/listings/:id", async (req, res)=>{
     let deletedListing = await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
     res.redirect("/listings");
+});
+
+app.use((err, req, res, next) => {  
+    console.log(err.name);
+    res.send(err.name);
 });
 
 // Form Validation : When we enter the data iun the form the browser must check whether the data is properly formated and obeys all the constraint set by the application.
