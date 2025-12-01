@@ -33,6 +33,23 @@ main().then((res) => {
     console.log("Error in connecting mongodb database : " + err);
 });
 
+// function is wrapping the joy object so that it could be usd as a middleware function
+const validateListing = (req, res, next) => {
+    // .validate() : the joi object is need to validate the req.body().
+    let { error } = listingSchema.validate(req.body);       // returns a result which may ahev the filed of error (if error exists) 
+    if(error){
+        // console.log(error);
+        // error contains a property named details which is a  object of message, path, type and context
+        // we could map each element of the detail array and join them using the map function and join function
+        const errorDetails = error.details.map((ele) => ele.message).join(", "); 
+        console.log(errorDetails);
+        throw new ExpressError(400, errorDetails);     
+    }
+    else{
+        next();
+    }
+}
+
 // home api
 app.get("/", (req, res) => {
     res.send("Server is Working Fine!!!");
@@ -68,12 +85,7 @@ app.get("/listings/new", (req, res) => {
     res.render("listings/new.ejs");
 });
 // post listing
-app.post("/listings", asyncWrap(async (req, res, next) => {
-    let result = listingSchema.validate(req.body);    // .validate() : the joi object is need to validate the req.body().
-    console.log(result);
-    if(result.error){
-        throw new ExpressError(400, result.error);
-    }
+app.post("/listings", validateListing, asyncWrap(async (req, res, next) => {
     let { listing } = req.body;
     let newlisting = await new Listing(listing);
     await newlisting.save();
@@ -95,10 +107,7 @@ app.get("/listings/:id/edit", asyncWrap(async (req, res) => {
     res.render("listings/edit.ejs", { listing });
 }));
 
-app.put("/listings/:id", asyncWrap(async (req, res) => {
-    if(!req.body.listing){
-        throw new ExpressError(400, "Please Enter a Valid Updated Listings");
-    }
+app.put("/listings/:id", validateListing, asyncWrap(async (req, res) => {
     let { id } = req.params;
     //with destructing of object its properties becomes direct keys and value
     // console.log(req.body.listing)
