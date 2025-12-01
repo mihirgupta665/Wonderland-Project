@@ -6,6 +6,8 @@ const Listing = require("./models/listing.js");
 const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled template
 const asyncWrap = require("./utility/asyncWrap.js");
 const ExpressError = require("./utility/ExpressError.js");
+const { listingSchema } = require("./schema.js");
+// nom i joi is used to validate are schema
 
 const app = express();
 
@@ -67,8 +69,10 @@ app.get("/listings/new", (req, res) => {
 });
 // post listing
 app.post("/listings", asyncWrap(async (req, res, next) => {
-    if (!req.body.listing) {
-        throw new ExpressError(400, "The Listing for insertion is Empty");
+    let result = listingSchema.validate(req.body);    // .validate() : the joi object is need to validate the req.body().
+    console.log(result);
+    if(result.error){
+        throw new ExpressError(400, result.error);
     }
     let { listing } = req.body;
     let newlisting = await new Listing(listing);
@@ -121,3 +125,5 @@ app.use((err, req, res, next) => {
 });
 
 // Form Validation : When we enter the data iun the form the browser must check whether the data is properly formated and obeys all the constraint set by the application.
+
+// nom i joi is used to validate are schema
