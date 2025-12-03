@@ -23,4 +23,21 @@
                 <button class="btn btn-dark offset-5">Delete</button>
             </form>
         </div>
- 
+        <hr>
+        <div class="col-8 offset-3 mb-3 review">
+            <h4>Leave a Review :</h4> 
+            <form>
+                <div class="mt-3 mb-3">
+                    <label for="rating" class="form-label">Rating : </label>
+                    <input type="range" min="0" max="5" id="rating" name="review[rating]" >
+                </div>
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Comment : </label>
+                    <textarea name="review[comment]" id="comment" cols="30" rows="7" class="form-control" placeholder="Write you comment here ..."></textarea>
+                </div>
+                
+                <button class="btn btn-outline-dark">Submit</button>
+            </form>
+            
+        </div>
+    </body>
