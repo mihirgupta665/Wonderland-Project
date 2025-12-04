@@ -124,7 +124,7 @@ app.delete("/listings/:id", asyncWrap(async (req, res) => {
 }));
 
 // posting review
-app.post("/listings/:id/review", async(req, res) => {
+app.post("/listings/:id/reviews", async(req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
     listing.reviews.push(newReview);
@@ -148,4 +148,4 @@ app.use((err, req, res, next) => {
 
 // Form Validation : When we enter the data iun the form the browser must check whether the data is properly formated and obeys all the constraint set by the application.
 
-// nom i joi is used to validate are schema
+// nom i joi is used to validate are schema  (ejex is also used to test api)
