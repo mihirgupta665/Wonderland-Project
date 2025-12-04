@@ -6,7 +6,7 @@ const Listing = require("./models/listing.js");
 const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled template
 const asyncWrap = require("./utility/asyncWrap.js");
 const ExpressError = require("./utility/ExpressError.js");
-const { listingSchema } = require("./schema.js");
+const { listingSchema, reviewSchema } = require("./schema.js");
 const Review = require("./models/review.js");
 // npm i joi is used to validate are schema
 
@@ -38,15 +38,26 @@ main().then((res) => {
 const validateListing = (req, res, next) => {
     // .validate() : the joi object is need to validate the req.body().
     let { error } = listingSchema.validate(req.body);       // returns a result which may ahev the filed of error (if error exists) 
-    if(error){
+    if (error) {
         // console.log(error);
         // error contains a property named details which is a  object of message, path, type and context
         // we could map each element of the detail array and join them using the map function and join function
-        const errorDetails = error.details.map((ele) => ele.message).join(", "); 
+        const errorDetails = error.details.map((ele) => ele.message).join(", ");
         console.log(errorDetails);
-        throw new ExpressError(400, errorDetails);     
+        throw new ExpressError(400, errorDetails);
     }
-    else{
+    else {
+        next();
+    }
+}
+
+const validateReview = (req, res, next) => {
+    let { error } = reviewSchema.validate(req.body);   // the joi schema created validates the req.body
+    if (error) {
+        let errmsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errmsg);
+    }
+    else {
         next();
     }
 }
@@ -124,7 +135,7 @@ app.delete("/listings/:id", asyncWrap(async (req, res) => {
 }));
 
 // posting review
-app.post("/listings/:id/reviews", async(req, res) => {
+app.post("/listings/:id/reviews", validateReview, asyncWrap( async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
     listing.reviews.push(newReview);
@@ -132,20 +143,22 @@ app.post("/listings/:id/reviews", async(req, res) => {
     await newReview.save();
     await listing.save();
     // console.log("Review Submitted Successfully");
-    redirect(`listings/${listing._id}`);
-});
+    res.redirect(`/listings/${listing._id}`);
+}));
 
-app.use((req, res, next)=>{
+app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));
 });
 
 app.use((err, req, res, next) => {
     let { status = 500, message = "Somthing Went Wrong!" } = err;
-    res.status(status).render("error", {err} );
+    res.status(status).render("error", { err });
     console.log(err.name);
 
 });
 
 // Form Validation : When we enter the data iun the form the browser must check whether the data is properly formated and obeys all the constraint set by the application.
 
-// nom i joi is used to validate are schema  (ejex is also used to test api)
+// npm i joi is used to validate are schema  (ejex is also used to test api)
+
+// to validate server side we need 3 things : i> Joi Schema, ii> create function to validate , iii> pass it as a middleware in post request

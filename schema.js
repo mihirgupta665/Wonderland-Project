@@ -13,3 +13,11 @@ module.exports.listingSchema = Joi.object({     // object should containt listin
 });
 
 // image dekh lena ek baar
+
+// -> create a joi object which contains the object to validate and that second object  must contain all the field(paramters) of that object
+module.exports.reviewSchema = Joi.object({  // everything in joi is a function      
+    review : Joi.object({
+        comment : Joi.string().required(),
+        ratings : Joi.number().required().min(0).max(5)
+    }).required(),
+});
