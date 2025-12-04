@@ -107,11 +107,12 @@ app.post("/listings", validateListing, asyncWrap(async (req, res, next) => {
 // Read or Show Api
 app.get("/listings/:id", asyncWrap(async (req, res) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id);
+    let listing = await Listing.findById(id).populate("reviews");   // populate the details of the array neamed reviews
     // console.log(listing);
     res.render("listings/show.ejs", { listing });
 }));
 
+// edit route
 app.get("/listings/:id/edit", asyncWrap(async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
