@@ -10,14 +10,14 @@ const Schema = mongoose.Schema;
 const reviewSchema = new Schema({
     comment : String,
     ratings : {
-        type : number,
+        type : Number,
         min : 0,
         max : 5
     },
     createdAt : {
         type : Date,
-        default : Date.now()
+        default : Date.now
     }
 });
 
-module.exports = new mongoose.model("Review", reviewSchema);
+module.exports = mongoose.model("Review", reviewSchema);

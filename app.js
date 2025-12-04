@@ -7,7 +7,8 @@ const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled t
 const asyncWrap = require("./utility/asyncWrap.js");
 const ExpressError = require("./utility/ExpressError.js");
 const { listingSchema } = require("./schema.js");
-// nom i joi is used to validate are schema
+const Review = require("./models/review.js");
+// npm i joi is used to validate are schema
 
 const app = express();
 
@@ -121,6 +122,18 @@ app.delete("/listings/:id", asyncWrap(async (req, res) => {
     // console.log(deletedListing);
     res.redirect("/listings");
 }));
+
+// posting review
+app.post("/listings/:id/review", async(req, res) => {
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review);
+    listing.reviews.push(newReview);
+
+    await newReview.save();
+    await listing.save();
+    // console.log("Review Submitted Successfully");
+    redirect(`listings/${listing._id}`);
+});
 
 app.use((req, res, next)=>{
     next(new ExpressError(404, "Page Not Found"));
