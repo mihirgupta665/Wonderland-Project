@@ -135,8 +135,8 @@ app.delete("/listings/:id", asyncWrap(async (req, res) => {
     res.redirect("/listings");
 }));
 
-// posting review
-app.post("/listings/:id/reviews", validateReview, asyncWrap( async (req, res) => {
+// post review route
+app.post("/listings/:id/reviews", validateReview, asyncWrap(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
     listing.reviews.push(newReview);
@@ -145,6 +145,15 @@ app.post("/listings/:id/reviews", validateReview, asyncWrap( async (req, res) =>
     await listing.save();
     // console.log("Review Submitted Successfully");
     res.redirect(`/listings/${listing._id}`);
+}));
+
+// delete review route
+// $pull : this operator is used to remove from an exisitng array all the instances of value or values that matches a specified condition.
+app.delete("/listings/:id/reviews/:reviewId", asyncWrap(async (req, res) => {
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
 }));
 
 app.use((req, res, next) => {
