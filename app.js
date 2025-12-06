@@ -9,6 +9,7 @@ const ExpressError = require("./utility/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 const Review = require("./models/review.js");
 const Listings = require("./routes/listings.js");
+const Reviews = require("./routes/reviews.js");
 // npm i joi is used to validate are schema
 
 const app = express();
@@ -36,60 +37,17 @@ main().then((res) => {
 });
 
 // function is wrapping the joy object so that it could be usd as a middleware function
-const validateListing = (req, res, next) => {
-    // .validate() : the joi object is need to validate the req.body().
-    let { error } = listingSchema.validate(req.body);       // returns a result which may ahev the filed of error (if error exists) 
-    if (error) {
-        // console.log(error);
-        // error contains a property named details which is a  object of message, path, type and context
-        // we could map each element of the detail array and join them using the map function and join function
-        const errorDetails = error.details.map((ele) => ele.message).join(", ");
-        console.log(errorDetails);
-        throw new ExpressError(400, errorDetails);
-    }
-    else {
-        next();
-    }
-}
-
-const validateReview = (req, res, next) => {
-    let { error } = reviewSchema.validate(req.body);   // the joi schema created validates the req.body
-    if (error) {
-        let errmsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errmsg);
-    }
-    else {
-        next();
-    }
-}
 
 // home api
 app.get("/", (req, res) => {
     res.send("Server is Working Fine!!!");
 })
 
+// listign route
 app.use("/listings", Listings);
 
 // post review route
-app.post("/listings/:id/reviews", validateReview, asyncWrap(async (req, res) => {
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-    // console.log("Review Submitted Successfully");
-    res.redirect(`/listings/${listing._id}`);
-}));
-
-// delete review route
-// $pull : this operator is used to remove from an exisitng array all the instances of value or values that matches a specified condition.
-app.delete("/listings/:id/reviews/:reviewId", asyncWrap(async (req, res) => {
-    let { id, reviewId } = req.params;
-    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/listings/${id}`);
-}));
+app.use("/listings/:id/reviews", Reviews);
 
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));
