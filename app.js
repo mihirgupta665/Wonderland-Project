@@ -8,6 +8,7 @@ const asyncWrap = require("./utility/asyncWrap.js");
 const ExpressError = require("./utility/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 const Review = require("./models/review.js");
+const Listings = require("./routes/listings.js");
 // npm i joi is used to validate are schema
 
 const app = express();
@@ -67,73 +68,7 @@ app.get("/", (req, res) => {
     res.send("Server is Working Fine!!!");
 })
 
-// testing api
-app.get("/listingTest", (req, res) => {
-    let testList = new Listing({
-        title: "My testing Villa",
-        description: "12 BHK with swimming pool",
-        price: 12000,
-        location: "Jalandhar",
-        country: "India"
-    });
-    testList.save().then((res) => {
-        console.log(res);
-    }).catch((err) => {
-        console.log("Error in inserting testing villa to database : " + err);
-    });
-    // sample data insterted successfuly so res.send function is used at last to display the message
-    res.send("Sucess!!  : Testing Sample Data inserted into database ");
-});
-
-// index api
-app.get("/listings", asyncWrap(async (req, res) => {
-    let listings = await Listing.find({});
-    // as veiw has been set therefore express will find vies directory and specified file will be rendered as ejs by default.
-    res.render("listings/index.ejs", { listings });
-}));
-
-// new listing
-app.get("/listings/new", (req, res) => {
-    res.render("listings/new.ejs");
-});
-// post listing
-app.post("/listings", validateListing, asyncWrap(async (req, res, next) => {
-    let { listing } = req.body;
-    let newlisting = await new Listing(listing);
-    await newlisting.save();
-    res.redirect("/listings");
-}));
-
-// Read or Show Api
-app.get("/listings/:id", asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id).populate("reviews");   // populate the details of the array neamed reviews
-    // console.log(listing);
-    res.render("listings/show.ejs", { listing });
-}));
-
-// edit route
-app.get("/listings/:id/edit", asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id);
-    // console.log(listing);
-    res.render("listings/edit.ejs", { listing });
-}));
-
-app.put("/listings/:id", validateListing, asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    //with destructing of object its properties becomes direct keys and value
-    // console.log(req.body.listing)
-    await Listing.findByIdAndUpdate(id, req.body.listing)   //deconstructing the listing object using ...req.body.listing
-    res.redirect(`/listings/${id}`);
-}));
-
-app.delete("/listings/:id", asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    let deletedListing = await Listing.findByIdAndDelete(id);
-    // console.log(deletedListing);
-    res.redirect("/listings");
-}));
+app.use("/listings", Listings);
 
 // post review route
 app.post("/listings/:id/reviews", validateReview, asyncWrap(async (req, res) => {

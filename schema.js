@@ -5,7 +5,11 @@ module.exports.listingSchema = Joi.object({     // object should containt listin
     listing : Joi.object({
         title : Joi.string().required(),        // title must be string tyoe and required too.
         description : Joi.string().required(),
-        image : Joi.string().allow("", null),       // string could be empty or null     .allow() : is used ot allow certain limitations
+        // image : Joi.string().allow("", null),       // string could be empty or null     .allow() : is used ot allow certain limitations
+        image: Joi.object({
+            filename: Joi.string().allow("", null).optional(),
+            url: Joi.string().allow("", null).required()
+        }).required(),         // image object may be omitted
         price : Joi.number().required().min(0),     // min price could only be 0.       .min(x) : is used to set some minimum value for the field
         location : Joi.string().required(),
         country : Joi.string().required()
