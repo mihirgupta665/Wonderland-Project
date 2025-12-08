@@ -10,6 +10,7 @@ const { listingSchema, reviewSchema } = require("./schema.js");
 const Review = require("./models/review.js");
 const Listings = require("./routes/listings.js");
 const Reviews = require("./routes/reviews.js");
+const expressSession = require("express-session");
 // npm i joi is used to validate are schema
 
 const app = express();
@@ -21,6 +22,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.use(expressSession({ secret : "MySuperSecretCode" , resave : false, saveUninitialized : true}));    // creating session for porject
 
 app.listen(8080, () => {
     console.log("Listening through port  : " + 8080);
@@ -65,3 +67,7 @@ app.use((err, req, res, next) => {
 // npm i joi is used to validate are schema  (ejex is also used to test api)
 
 // to validate server side we need 3 things : i> Joi Schema, ii> create function to validate , iii> pass it as a middleware in post request
+
+// cookies : HTTP cookies are small block of data created be a web server while a user is browsing a website and placed on user's coumputer or other device by user's web browser.
+// npm i cookie-parser, parse name cookie and print hi and name should have anonymous as the default value
+// signedCookie

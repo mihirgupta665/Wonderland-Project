@@ -8,6 +8,7 @@ const ExpressError = require("../utility/ExpressError.js");
 const { listingSchema } = require("../schema.js");
 
 
+
 const validateListing = (req, res, next) => {
     // .validate() : the joi object is need to validate the req.body().
     let { error } = listingSchema.validate(req.body);       // returns a result which may ahev the filed of error (if error exists) 
