@@ -11,6 +11,7 @@ const Review = require("./models/review.js");
 const Listings = require("./routes/listings.js");
 const Reviews = require("./routes/reviews.js");
 const expressSession = require("express-session");
+const flash = require("connect-flash");
 // npm i joi is used to validate are schema
 
 const app = express();
@@ -22,7 +23,25 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.use(expressSession({ secret : "MySuperSecretCode" , resave : false, saveUninitialized : true}));    // creating session for porject
+app.use(expressSession(
+    {
+        secret: "MySuperSecretCode",
+        resave: false,
+        saveUninitialized: true,
+        cookie : {
+            expires : Date.now() + 7 * 24 *  60 * 60 * 1000,  // you cookie ex: login credentials remains saved for 7 days (7 day * 24 hour * 60 min * 60 sec * 1000 milliseconds)
+            maxAge : 7 * 24 * 60 * 60 * 1000,
+            httpOnly : true     // provides security for cross scripting
+        }
+
+    }
+));    // creating session for porject
+
+app.use(flash());
+app.use((req, res, next)=>{
+    res.locals.success = req.flash("success");
+    next();
+});
 
 app.listen(8080, () => {
     console.log("Listening through port  : " + 8080);

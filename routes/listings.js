@@ -59,6 +59,9 @@ router.post("/", validateListing, asyncWrap(async (req, res, next) => {
     let { listing } = req.body;
     let newlisting = await new Listing(listing);
     await newlisting.save();
+    
+    // creating a flash message  for each successfull addition of listing
+    req.flash("success", "New Listing Saved and Updated Successfully!");    
     res.redirect("/listings");
 }));
 
