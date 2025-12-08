@@ -2,12 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const path = require("path");
-const Listing = require("./models/listing.js");
 const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled template
 const asyncWrap = require("./utility/asyncWrap.js");
 const ExpressError = require("./utility/ExpressError.js");
-const { listingSchema, reviewSchema } = require("./schema.js");
-const Review = require("./models/review.js");
 const Listings = require("./routes/listings.js");
 const Reviews = require("./routes/reviews.js");
 const expressSession = require("express-session");
@@ -40,6 +37,7 @@ app.use(expressSession(
 app.use(flash());
 app.use((req, res, next)=>{
     res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
     next();
 });
 
