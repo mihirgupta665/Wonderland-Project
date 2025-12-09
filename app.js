@@ -10,6 +10,9 @@ const Reviews = require("./routes/reviews.js");
 const expressSession = require("express-session");
 const flash = require("connect-flash");
 // npm i joi is used to validate are schema
+const passport = require("passport");       // passport is needed for authetication
+const LocalStrategy = require("passport-local");        /// it is a class we need local authentication strategy so passport-local is needed
+const User = require("./models/user.js");       // required the mongoos model of user with has the lpugin of passport-local-mongoose
 
 const app = express();
 
@@ -35,6 +38,15 @@ app.use(expressSession(
 ));    // creating session for porject
 
 app.use(flash());
+app.use(passport.initialize());     // passport need to be initialized.
+app.use(passport.session());    // passport must be active for the entire session
+// web application needs an ability to identify users as they browse from one page to another. 
+// This series of request and response each associated with te same user is knwo as session.
+passport.use(new LocalStrategy(User.authenticate()));   // strategy object is created and the model authentication method is passed to authenticate that model.
+passport.serializeUser(User.serializeUser);
+passport.deserializeUser(User.deserializeUSer);
+
+
 app.use((req, res, next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
