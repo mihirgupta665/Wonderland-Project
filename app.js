@@ -44,7 +44,7 @@ app.use(passport.session());    // passport must be active for the entire sessio
 // This series of request and response each associated with te same user is knwo as session.
 passport.use(new LocalStrategy(User.authenticate()));   // strategy object is created and the model authentication method is passed to authenticate that model.
 passport.serializeUser(User.serializeUser);
-passport.deserializeUser(User.deserializeUSer);
+passport.deserializeUser(User.deserializeUser);
 
 
 app.use((req, res, next)=>{
@@ -74,9 +74,19 @@ app.get("/", (req, res) => {
     res.send("Server is Working Fine!!!");
 })
 
+app.get("/demouser", async (req, res)=>{
+    let fakeUser = new User({
+    email : "mihirgupta665@gmail.com",
+    username : "Mihir Gupta"        // usernaem salted and hashed filed was already creatinf by deault by the passpor-local-mongoose
+    });
+
+    let registeredUser = await User.register(fakeUser, "mihir123");
+    res.send(registeredUser);
+});
+
+//Routers
 // listign route
 app.use("/listings", Listings);
-
 // post review route
 app.use("/listings/:id/reviews", Reviews);
 
