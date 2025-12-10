@@ -103,10 +103,10 @@ app.get("/demouser", async (req, res) => {
     res.send(registeredUser);
 });
 
-app.use((req, res, next) => {
-    console.log("INCOMING:", req.method, req.url);
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log("INCOMING:", req.method, req.url);
+//     next();
+// });
 
 
 //Routers

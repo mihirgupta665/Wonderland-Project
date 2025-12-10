@@ -6,6 +6,8 @@ const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled t
 const asyncWrap = require("../utility/asyncWrap.js");
 const ExpressError = require("../utility/ExpressError.js");
 const { listingSchema } = require("../schema.js");
+const { isLoggedIn } = require("../middleware.js");
+
 
 
 
@@ -51,17 +53,18 @@ router.get("/", asyncWrap(async (req, res) => {
 }));
 
 // new listing
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn ,(req, res) => {
     res.render("listings/new.ejs");
 });
+
 // post listing
-router.post("/", validateListing, asyncWrap(async (req, res, next) => {
+router.post("/", isLoggedIn, validateListing, asyncWrap(async (req, res, next) => {
     let { listing } = req.body;
     let newlisting = await new Listing(listing);
     await newlisting.save();
-    
+
     // creating a flash message  for each successfull addition of listing
-    req.flash("success", "New Listing Created Successfully!");    
+    req.flash("success", "New Listing Created Successfully!");
     res.redirect("/listings");
 }));
 
@@ -69,7 +72,7 @@ router.post("/", validateListing, asyncWrap(async (req, res, next) => {
 router.get("/:id", asyncWrap(async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findById(id).populate("reviews");   // populate the details of the array neamed reviews
-    if(!listing){
+    if (!listing) {
         req.flash("error", "Listing does not exists");
         return res.redirect("/listings");
     }
@@ -78,18 +81,18 @@ router.get("/:id", asyncWrap(async (req, res) => {
 }));
 
 // edit route
-router.get("/:id/edit", asyncWrap(async (req, res) => {
+router.get("/:id/edit", isLoggedIn, asyncWrap(async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
     // console.log(listing);
-    if(!listing){
+    if (!listing) {
         req.flash("error", "Listing does not exists");
         return res.redirect("/listings");
     }
     res.render("listings/edit.ejs", { listing });
 }));
 
-router.put("/:id", validateListing, asyncWrap(async (req, res) => {
+router.put("/:id", isLoggedIn, validateListing, asyncWrap(async (req, res) => {
     let { id } = req.params;
     //with destructing of object its properties becomes direct keys and value
     // console.log(req.body.listing)
@@ -98,7 +101,7 @@ router.put("/:id", validateListing, asyncWrap(async (req, res) => {
     res.redirect(`/listings/${id}`);
 }));
 
-router.delete("/:id", asyncWrap(async (req, res) => {
+router.delete("/:id", isLoggedIn, asyncWrap(async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
     // console.log(deletedListing);

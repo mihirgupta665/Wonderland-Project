@@ -107,12 +107,15 @@ router.post("/login", async (req, res, next) => {
     }
 });
 
-
-
-
-
-
-
+router.get("/logout", (req, res, next) => {
+    req.logOut((err) => {     // call back will always be called if there is no error then err is undefined.
+        if (err) {
+            return next(err);
+        }
+        req.flash("success", "User is Logout Successfully!");
+        res.redirect("/listings");
+    });
+});
 
 
 
