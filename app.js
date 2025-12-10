@@ -92,7 +92,7 @@ app.use("/listings", Listings);
 // post review route
 app.use("/listings/:id/reviews", Reviews);
 // user route
-app.use("/signup", Users);
+app.use("/", Users);
 
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));

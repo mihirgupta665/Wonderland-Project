@@ -7,11 +7,11 @@ const app = express();
 const router = express.Router();
 
 
-router.get("/", (req, res)=>{
+router.get("/signup", (req, res)=>{
     res.render("users/signup");
 });
 
-router.post("/", asyncWrap(async (req, res)=>{
+router.post("/signup", asyncWrap(async (req, res)=>{
     try{    // writing try catch so that flash do not exihibits to a lost page
 
         // console.log(req.body);
@@ -28,5 +28,9 @@ router.post("/", asyncWrap(async (req, res)=>{
         res.redirect("/signup");
     }
 }));
+
+router.get("/login", (req, res)=>{
+    res.render("users/login.ejs");
+});
 
 module.exports = router;
