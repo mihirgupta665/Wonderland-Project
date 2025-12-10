@@ -7,12 +7,14 @@ const asyncWrap = require("./utility/asyncWrap.js");
 const ExpressError = require("./utility/ExpressError.js");
 const Listings = require("./routes/listings.js");
 const Reviews = require("./routes/reviews.js");
+const Users = require("./routes/user.js");
 const expressSession = require("express-session");
 const flash = require("connect-flash");
 // npm i joi is used to validate are schema
 const passport = require("passport");       // passport is needed for authetication
 const LocalStrategy = require("passport-local");        /// it is a class we need local authentication strategy so passport-local is needed
 const User = require("./models/user.js");       // required the mongoos model of user with has the lpugin of passport-local-mongoose
+
 
 const app = express();
 
@@ -89,6 +91,8 @@ app.get("/demouser", async (req, res)=>{
 app.use("/listings", Listings);
 // post review route
 app.use("/listings/:id/reviews", Reviews);
+// user route
+app.use("/signup", Users);
 
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));
