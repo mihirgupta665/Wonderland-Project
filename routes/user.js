@@ -11,4 +11,22 @@ router.get("/", (req, res)=>{
     res.render("users/signup");
 });
 
+router.post("/", asyncWrap(async (req, res)=>{
+    try{    // writing try catch so that flash do not exihibits to a lost page
 
+        // console.log(req.body);
+        let {username, email, password} = req.body;
+        let newUser = new User({email, username});
+        let registeredUser =  await User.register(newUser, password);
+        console.log(registeredUser);
+        
+        req.flash("success", "Welcome to WONDERLAND!");
+        res.redirect("/listings");
+    }
+    catch(err){     // noow by this catch error will be displayed in form of flash on the very same page.
+        req.flash("error", err.message);    
+        res.redirect("/signup");
+    }
+}));
+
+module.exports = router;
