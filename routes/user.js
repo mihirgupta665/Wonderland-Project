@@ -52,10 +52,10 @@ router.get("/login", (req, res) => {
 
 router.post("/login", async (req, res, next) => {
     // console.log("LOGIN ROUTE HIT, BODY:", req.body);
-    console.log("return to login : ", req.session.returnTo);
+    // console.log("return to login : ", req.session.returnTo);
     res.locals.saveRedirect = req.session.returnTo;
     // here  in js res.locals.varaiable_name is required to access the local variable
-    console.log(res.locals.saveRedirect);       // saveRedirect could eb directly written in ejs file only
+    // console.log(res.locals.saveRedirect);       // saveRedirect could eb directly written in ejs file only
     const { username, password } = req.body;
 
     try {
@@ -109,9 +109,8 @@ router.post("/login", async (req, res, next) => {
             req.flash("success", "Welcome back!");
             // console.log("returnTo : ", req.session.returnTo);
             // console.log(req.session);
-            const redirectUrl = req.session.returnTo || "/listings";
-            delete req.session.returnTo;
-            return res.redirect(res.locals.saveRedirect);
+            // delete req.session.returnTo;
+            return res.redirect(res.locals.saveRedirect || "/listings");
         });
     } catch (e) {
         // console.error("LOGIN OUTER ERROR:", e);
