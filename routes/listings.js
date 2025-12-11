@@ -61,6 +61,7 @@ router.get("/new", isLoggedIn ,(req, res) => {
 router.post("/", isLoggedIn, validateListing, asyncWrap(async (req, res, next) => {
     let { listing } = req.body;
     let newlisting = await new Listing(listing);
+    newlisting.owner = req.user._id; 
     await newlisting.save();
 
     // creating a flash message  for each successfull addition of listing
@@ -71,12 +72,12 @@ router.post("/", isLoggedIn, validateListing, asyncWrap(async (req, res, next) =
 // Read or Show Api
 router.get("/:id", asyncWrap(async (req, res) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id).populate("reviews");   // populate the details of the array neamed reviews
+    let listing = await Listing.findById(id).populate("reviews").populate("owner");   // populate the details of the array neamed reviews
     if (!listing) {
         req.flash("error", "Listing does not exists");
         return res.redirect("/listings");
     }
-    // console.log(listing);
+    console.log(listing);
     res.render("listings/show.ejs", { listing });
 }));
 
