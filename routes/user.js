@@ -10,19 +10,24 @@ router.get("/signup", (req, res) => {
     res.render("users/signup");
 });
 
-router.post("/signup", asyncWrap(async (req, res) => {
+router.post("/signup", asyncWrap(async (req, res, next) => {
     try {    // writing try catch so that flash do not exihibits to a lost page
 
         // console.log(req.body);
         let { username, email, password } = req.body;
         let newUser = new User({ email, username });
         let registeredUser = await User.register(newUser, password);
-        console.log(registeredUser);
-
-        req.flash("success", "Welcome to WONDERLAND!");
-        res.redirect("/listings");
+        // console.log(registeredUser);
+        req.logIn(registeredUser, (err) => {
+            if (err) {
+                console.log("Sign-up -> login error");
+                return next(err);
+            }
+            req.flash("success", "Welcome to WONDERLAND!");
+            return res.redirect("/listings");
+        });
     }
-    catch (err) {     // noow by this catch error will be displayed in form of flash on the very same page.
+    catch (err) {     // now by this catch error will be displayed in form of flash on the very same page.
         req.flash("error", err.message);
         res.redirect("/signup");
     }
