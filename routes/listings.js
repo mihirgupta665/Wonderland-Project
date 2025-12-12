@@ -6,7 +6,7 @@ const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled t
 const asyncWrap = require("../utility/asyncWrap.js");
 
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
-
+const listingsController = require("../controllers/listings.js");
 /*
 // testing api
 router.get("/listingTest", (req, res) => {
@@ -28,74 +28,22 @@ router.get("/listingTest", (req, res) => {
 */
 
 // index api
-router.get("/", asyncWrap(async (req, res) => {
-    let listings = await Listing.find({});
-    // as veiw has been set therefore express will find vies directory and specified file will be rendered as ejs by default.
-    res.render("listings/index.ejs", { listings });
-}));
+router.get("/", asyncWrap(listingsController.index));
 
 // new listing
-router.get("/new", isLoggedIn ,(req, res) => {
-    res.render("listings/new.ejs");
-});
+router.get("/new", isLoggedIn , listingsController.renderNewForm);
 
 // post listing
-router.post("/", isLoggedIn, validateListing, asyncWrap(async (req, res, next) => {
-    let { listing } = req.body;
-    let newlisting = await new Listing(listing);
-    newlisting.owner = req.user._id; 
-    await newlisting.save();
-
-    // creating a flash message  for each successfull addition of listing
-    req.flash("success", "New Listing Created Successfully!");
-    res.redirect("/listings");
-}));
+router.post("/", isLoggedIn, validateListing, asyncWrap(listingsController.createListing));
 
 // Read or Show Api
-router.get("/:id", asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id)
-    .populate({path : "reviews",
-        populate: {                 // nested populate is done by populate : and object of path : property
-            path: "author",
-        },
-    })
-    .populate("owner");   // populate the details of the array neamed reviews
-    if (!listing) {
-        req.flash("error", "Listing does not exists");
-        return res.redirect("/listings");
-    }
-    // console.log(listing);
-    res.render("listings/show.ejs", { listing });
-}));
+router.get("/:id", asyncWrap(listingsController.showListing));
 
 // edit route
-router.get("/:id/edit", isLoggedIn, isOwner, asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id);
-    // console.log(listing);
-    if (!listing) {
-        req.flash("error", "Listing does not exists");
-        return res.redirect("/listings");
-    }
-    res.render("listings/edit.ejs", { listing });
-}));
+router.get("/:id/edit", isLoggedIn, isOwner, asyncWrap(listingsController.renderEditForm));
 
-router.put("/:id", isLoggedIn, isOwner, validateListing, asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    //with destructing of object its properties becomes direct keys and value
-    // console.log(req.body.listing)
-    await Listing.findByIdAndUpdate(id, req.body.listing)   //deconstructing the listing object using ...req.body.listing
-    req.flash("success", "Updated Listing Successfully!");
-    res.redirect(`/listings/${id}`);
-}));
+router.put("/:id", isLoggedIn, isOwner, validateListing, asyncWrap(listingsController.updateListing));
 
-router.delete("/:id", isLoggedIn, isOwner, asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    let deletedListing = await Listing.findByIdAndDelete(id);
-    // console.log(deletedListing);
-    req.flash("success", "Listing Deleted Successfully");
-    res.redirect("/listings");
-}));
+router.delete("/:id", isLoggedIn, isOwner, asyncWrap(listingsController.destroyListing));
 
 module.exports = router;
