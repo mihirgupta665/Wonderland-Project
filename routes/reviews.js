@@ -6,10 +6,10 @@ const { reviewSchema } = require("../schema.js");
 const Review = require("../models/review.js");
 const Listing = require("../models/listing.js"); // as review is being added in listing model therefore we need lsiting model too.
 // middleware is the collections of middleware we need just one middleware out of the collection
-const { validateReview } = require("../middleware.js");
+const { validateReview, isLoggedIn } = require("../middleware.js");
 
 
-router.post("/", validateReview, asyncWrap(async (req, res) => {
+router.post("/", isLoggedIn ,validateReview, asyncWrap(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
     listing.reviews.push(newReview);
