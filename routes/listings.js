@@ -54,7 +54,13 @@ router.post("/", isLoggedIn, validateListing, asyncWrap(async (req, res, next) =
 // Read or Show Api
 router.get("/:id", asyncWrap(async (req, res) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id).populate("reviews").populate("owner");   // populate the details of the array neamed reviews
+    let listing = await Listing.findById(id)
+    .populate({path : "reviews",
+        populate: {                 // nested populate is done by populate : and object of path : property
+            path: "author",
+        },
+    })
+    .populate("owner");   // populate the details of the array neamed reviews
     if (!listing) {
         req.flash("error", "Listing does not exists");
         return res.redirect("/listings");

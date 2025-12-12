@@ -12,6 +12,8 @@ const { validateReview, isLoggedIn } = require("../middleware.js");
 router.post("/", isLoggedIn ,validateReview, asyncWrap(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
+    newReview.author = req.user._id;
+    console.log(newReview);
     listing.reviews.push(newReview);
 
     await newReview.save();
@@ -23,7 +25,7 @@ router.post("/", isLoggedIn ,validateReview, asyncWrap(async (req, res) => {
 
 // delete review route
 // $pull : this operator is used to remove from an exisitng array all the instances of value or values that matches a specified condition.
-router.delete("/:reviewId", asyncWrap(async (req, res) => {
+router.delete("/:reviewId", isLoggedIn ,asyncWrap(async (req, res) => {
     let { id, reviewId } = req.params;
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);

@@ -24,14 +24,14 @@
         <!-- current user details will be in the locals of currUSer and listing.owner._id will contain the owner id -->
          <!-- if not loged in the curruser will be undefinded -->
 
-        <!-- <% if(currUser && currUser._id.equals(listing.owner._id)) {%>    -->
+        
         <div class="btns mb-4">
             <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
             <form method="post" action="/listings/<%=listing._id%>?_method=DELETE">
                 <button class="btn btn-dark offset-5">Delete</button>
             </form>
         </div>
-        <!-- <% } %> -->
+        
         <hr>
         <div class="col-8 offset-3 mb-3 review">
             <!-- <% if(currUser) { %> -->
@@ -59,7 +59,7 @@
                 <% for(review of listing.reviews) { %>
                     <div class="card col-5 ms-3 mb-3">
                         <div class="card-body">
-                            <h5 class="card-title">Mihir Gupta</h5>
+                            <h5 class="card-title">Author : <%= review.author.username %></h5>
                             <p class="card-text">
                                 <%= review.comment %>
                             </p>
