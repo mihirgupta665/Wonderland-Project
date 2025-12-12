@@ -21,6 +21,8 @@
                 </div>
             </div>
         </div>
+        <!-- current user details will be in the locals of currUSer and listing.owner._id will contain the owner id -->
+         <!-- if not loged in the curruser will be undefinded -->
         <div class="btns mb-4">
             <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
             <form method="post" action="/listings/<%=listing._id%>?_method=DELETE">

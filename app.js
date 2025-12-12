@@ -69,6 +69,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
+    // console.log(req.user);
     res.locals.currUser = req.user;     // as we have done authentication so req.user will always be with us for each session session
     
     next();

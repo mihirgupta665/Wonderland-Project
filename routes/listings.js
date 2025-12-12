@@ -4,29 +4,10 @@ const methodOverride = require("method-override");
 const Listing = require("../models/listing.js");
 const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled template
 const asyncWrap = require("../utility/asyncWrap.js");
-const ExpressError = require("../utility/ExpressError.js");
-const { listingSchema } = require("../schema.js");
-const { isLoggedIn } = require("../middleware.js");
 
+const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
-
-
-const validateListing = (req, res, next) => {
-    // .validate() : the joi object is need to validate the req.body().
-    let { error } = listingSchema.validate(req.body);       // returns a result which may ahev the filed of error (if error exists) 
-    if (error) {
-        // console.log(error);
-        // error contains a property named details which is a  object of message, path, type and context
-        // we could map each element of the detail array and join them using the map function and join function
-        const errorDetails = error.details.map((ele) => ele.message).join(", ");
-        console.log(errorDetails);
-        throw new ExpressError(400, errorDetails);
-    }
-    else {
-        next();
-    }
-}
-
+/*
 // testing api
 router.get("/listingTest", (req, res) => {
     let testList = new Listing({
@@ -44,6 +25,7 @@ router.get("/listingTest", (req, res) => {
     // sample data insterted successfuly so res.send function is used at last to display the message
     res.send("Sucess!!  : Testing Sample Data inserted into database ");
 });
+*/
 
 // index api
 router.get("/", asyncWrap(async (req, res) => {
@@ -77,12 +59,12 @@ router.get("/:id", asyncWrap(async (req, res) => {
         req.flash("error", "Listing does not exists");
         return res.redirect("/listings");
     }
-    console.log(listing);
+    // console.log(listing);
     res.render("listings/show.ejs", { listing });
 }));
 
 // edit route
-router.get("/:id/edit", isLoggedIn, asyncWrap(async (req, res) => {
+router.get("/:id/edit", isLoggedIn, isOwner, asyncWrap(async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
     // console.log(listing);
@@ -93,7 +75,7 @@ router.get("/:id/edit", isLoggedIn, asyncWrap(async (req, res) => {
     res.render("listings/edit.ejs", { listing });
 }));
 
-router.put("/:id", isLoggedIn, validateListing, asyncWrap(async (req, res) => {
+router.put("/:id", isLoggedIn, isOwner, validateListing, asyncWrap(async (req, res) => {
     let { id } = req.params;
     //with destructing of object its properties becomes direct keys and value
     // console.log(req.body.listing)
@@ -102,7 +84,7 @@ router.put("/:id", isLoggedIn, validateListing, asyncWrap(async (req, res) => {
     res.redirect(`/listings/${id}`);
 }));
 
-router.delete("/:id", isLoggedIn, asyncWrap(async (req, res) => {
+router.delete("/:id", isLoggedIn, isOwner, asyncWrap(async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
     // console.log(deletedListing);

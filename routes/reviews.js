@@ -1,21 +1,13 @@
 const express = require("express");
-const router = express.Router({mergeParams : true});    // preserves the paramters of parent route for the child route
+const router = express.Router({ mergeParams: true });    // preserves the paramters of parent route for the child route
 const asyncWrap = require("../utility/asyncWrap.js");
 const ExpressError = require("../utility/ExpressError.js");
 const { reviewSchema } = require("../schema.js");
 const Review = require("../models/review.js");
 const Listing = require("../models/listing.js"); // as review is being added in listing model therefore we need lsiting model too.
+// middleware is the collections of middleware we need just one middleware out of the collection
+const { validateReview } = require("../middleware.js");
 
-const validateReview = (req, res, next) => {
-    let { error } = reviewSchema.validate(req.body);   // the joi schema created validates the req.body
-    if (error) {
-        let errmsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errmsg);
-    }
-    else {
-        next();
-    }
-}
 
 router.post("/", validateReview, asyncWrap(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
@@ -25,7 +17,7 @@ router.post("/", validateReview, asyncWrap(async (req, res) => {
     await newReview.save();
     await listing.save();
     // console.log("Review Submitted Successfully");
-    req.flash("success","Review Written Successfully!");
+    req.flash("success", "Review Written Successfully!");
     res.redirect(`/listings/${listing._id}`);
 }));
 
