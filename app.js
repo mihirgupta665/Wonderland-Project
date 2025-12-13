@@ -1,3 +1,8 @@
+if(process.env.NODE_ENV != "production"){       // when NODE.ENV is not production only then we will use dotenv else we will hide it.. 
+    require('dotenv').config();     // dotenv is used to use env variable in backend 
+}
+// console.log(process.env);  // we coould access the .env file 
+
 const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
