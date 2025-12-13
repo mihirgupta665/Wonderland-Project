@@ -7,32 +7,38 @@
             <div class="col-8 offset-2 mt-3">
                 <h2>Create new New Listing : </h2>
                 <!-- no validate need to be written so that browser dont insert thier own validation messages -->
-                 <!-- needs-validation : is a bootstrap class used to add bootstarp validation(strandardized) independent of browsers -->
-                <form method="post" action="/listings" novalidate class="needs-validation"> 
+                <!-- needs-validation : is a bootstrap class used to add bootstarp validation(strandardized) independent of browsers -->
+                <!-- enctype="mutlipart/form-data" is written to make form accept files -->
+                <form method="post" action="/listings" novalidate class="needs-validation"
+                    enctype="multipart/form-data">
                     <div class="mb-3">
                         <!-- form-label : is used to add styling label  -->
                         <!-- form-control : is used to add styling in input  -->
                         <label for="title" class="form-label">Title : </label>
-                        <input type="text" placeholder="Enter the Title" name="listing[title]" class="form-control" required>
+                        <input type="text" placeholder="Enter the Title" name="listing[title]" class="form-control"
+                            required>
                         <!-- valid-feedback / invalid-feedback : is used to add success or failure message... -->
                         <div class="valid-feedback">Title Looks Good!</div>
                         <div class="invalid-feedback">Please Enter the Title</div>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description : </label>
-                        <textarea placeholder="Enter the Description" name="listing[description]"
-                            class="form-control" required></textarea>
-                            <div class="valid-feedback">Description Looks Cool!</div>
-                            <div class="invalid-feedback">Please Enter a Valid Description</div>
-                    </div>
+                        <textarea placeholder="Enter the Description" name="listing[description]" class="form-control"
+                            required></textarea>
+                        <div class="valid-feedback">Description Looks Cool!</div>
+                        <div class="invalid-feedback">Please Enter a Valid Description</div>
+                    </div> 
+                    <!-- To add file we need to change the form enctype="multipart/form-data"  -->
                     <div class="mb-3">
-                        <label for="image.url" class="form-label">Image Link : </label>
-                        <input type="text" placeholder="Enter the Image URL" name="listing[image][url]"
-                            class="form-control">
+                        <label for="image.url" class="form-label">Upload Image : </label>
+                        <input type="file" name="listing[image][url]" class="form-control">
                     </div>
+
+
                     <div class="mb-3">
                         <label for="price" class="form-label">Price : </label>
-                        <input type="text" placeholder="Enter the Price" name="listing[price]" class="form-control" required>
+                        <input type="text" placeholder="Enter the Price" name="listing[price]" class="form-control"
+                            required>
                         <div class="valid-feedback">Price Looks Good!</div>
                         <div class="invalid-feedback">Price Invalid!</div>
                     </div>

@@ -17,7 +17,9 @@ const flash = require("connect-flash");
 const passport = require("passport");
 // const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
-
+// npm i multer is a node.js middleware used to parse multipart/form-data i.e. forms having files uploaded.
+const multer = require("multer");
+let upload = multer({dest : "uploads/ "});
 
 
 const app = express();
