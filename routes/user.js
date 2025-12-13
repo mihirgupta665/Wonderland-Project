@@ -2,15 +2,18 @@ const express = require("express");
 const User = require("../models/user.js");
 const asyncWrap = require("../utility/asyncWrap.js");
 const passport = require("passport");
-
 const router = express.Router();
 const userController = require("../controllers/user.js");
 
-router.get("/signup", userController.renderSignUpForm);
+router.route("/signup")
+    .get(userController.renderSignUpForm)       // rendering signup form
+    .post(asyncWrap(userController.signUp));      // creating account for user
 
-router.post("/signup", asyncWrap(userController.signUp));
 
-router.get("/login", userController.renderLogInForm);
+router.route("/login")
+    .get(userController.renderLogInForm)        // rendering login form
+    .post(userController.logIn);        // mechanism login in the user
+
 
 // router.post(
 //     "/login",
@@ -26,10 +29,7 @@ router.get("/login", userController.renderLogInForm);
 // );
 
 
-router.post("/login", userController.logIn);
-
 router.get("/logout", userController.logOut);
-
 
 
 module.exports = router;

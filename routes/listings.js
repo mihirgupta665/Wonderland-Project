@@ -27,23 +27,22 @@ router.get("/listingTest", (req, res) => {
 });
 */
 
-// index api
-router.get("/", asyncWrap(listingsController.index));
+router.route("/")
+    .get(asyncWrap(listingsController.index)) // index api
+    .post(isLoggedIn, validateListing, asyncWrap(listingsController.createListing)); // post listing
+
 
 // new listing
 router.get("/new", isLoggedIn , listingsController.renderNewForm);
 
-// post listing
-router.post("/", isLoggedIn, validateListing, asyncWrap(listingsController.createListing));
 
-// Read or Show Api
-router.get("/:id", asyncWrap(listingsController.showListing));
+router.route("/:id")
+    .get(asyncWrap(listingsController.showListing)) // Read or Show Api
+    .put(isLoggedIn, isOwner, validateListing, asyncWrap(listingsController.updateListing))     // update listing
+    .delete (isLoggedIn, isOwner, asyncWrap(listingsController.destroyListing));    // delete listing
+
 
 // edit route
 router.get("/:id/edit", isLoggedIn, isOwner, asyncWrap(listingsController.renderEditForm));
-
-router.put("/:id", isLoggedIn, isOwner, validateListing, asyncWrap(listingsController.updateListing));
-
-router.delete("/:id", isLoggedIn, isOwner, asyncWrap(listingsController.destroyListing));
 
 module.exports = router;
