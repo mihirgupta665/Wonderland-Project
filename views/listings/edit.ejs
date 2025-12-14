@@ -19,11 +19,16 @@
                         <div class="invalid-feedback">Please Enter a valid Description</div>
                     </div>
                     <div class="mb-3">
+                        Original Listing Image : 
+                        <br>
+                        <img src="<%= originalImageUrl %>" alt="Listing Image">
+                    </div>
+                    <div class="mb-3">
                         <label for="image" class="form-label">Upload New Image : </label>
                         <input type="file"  name="listing[image][url]"
                             class="form-control" >
                         <div class="valid-feedback">Image Looks Good!</div>
-                        <div class="invalid-feedback">Please Enter a valid Image Link</div>
+                        <div class="invalid-feedback">Please Upload a valid Image File</div>
                     </div>
                     <div class="row">
                     <div class="mb-3 col-md-4">
