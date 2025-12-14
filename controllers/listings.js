@@ -58,7 +58,13 @@ module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
     //with destructing of object its properties becomes direct keys and value
     // console.log(req.body.listing)
-    await Listing.findByIdAndUpdate(id, req.body.listing)   //deconstructing the listing object using ...req.body.listing
+    let listing = await Listing.findByIdAndUpdate(id, req.body.listing)   //deconstructing the listing object using ...req.body.listing
+    if( typeof req.file !== "undefined"){
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = {filename, url};
+        await listing.save();
+    }
     req.flash("success", "Updated Listing Successfully!");
     res.redirect(`/listings/${id}`);
 }

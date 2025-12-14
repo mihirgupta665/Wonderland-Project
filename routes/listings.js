@@ -52,7 +52,10 @@ router.get("/new", isLoggedIn, listingsController.renderNewForm);
 
 router.route("/:id")
     .get(asyncWrap(listingsController.showListing)) // Read or Show Api
-    .put(isLoggedIn, isOwner, validateListing, asyncWrap(listingsController.updateListing))     // update listing
+    .put(isLoggedIn, isOwner,
+        upload.single("listing[image][url]"),
+        //  validateListing,
+          asyncWrap(listingsController.updateListing))     // update listing
     .delete(isLoggedIn, isOwner, asyncWrap(listingsController.destroyListing));    // delete listing
 
 
