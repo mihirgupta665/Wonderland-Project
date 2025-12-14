@@ -11,9 +11,13 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 module.exports.createListing = async (req, res, next) => {
+    let url = req.file.path;
+    let filename = req.file.filename;
+    // console.log(url, "..", filename);
     let { listing } = req.body;
     let newlisting = await new Listing(listing);
     newlisting.owner = req.user._id; 
+    newlisting.image= {filename, url};
     await newlisting.save();
 
     // creating a flash message  for each successfull addition of listing

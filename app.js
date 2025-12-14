@@ -2,6 +2,7 @@ if(process.env.NODE_ENV != "production"){       // when NODE.ENV is not producti
     require('dotenv').config();     // dotenv is used to use env variable in backend 
 }
 // console.log(process.env);  // we coould access the .env file 
+// npm i cloudinary and npm i multi-storage-cloudinary is used tp connect with cloudinary and using multer to upload certain files to cloudinary
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -25,6 +26,9 @@ const User = require("./models/user.js");
 // npm i multer is a node.js middleware used to parse multipart/form-data i.e. forms having files uploaded.
 const multer = require("multer");
 let upload = multer({dest : "uploads/ "});
+
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 
 const app = express();
