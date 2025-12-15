@@ -22,6 +22,7 @@ const userSchema = new Schema({
     // username, hash, salt will be added by passport-local-mongoose
 });
 
+
 // plugin expects a FUNCTION, so pass the function, not the object
 // console.log(passportLocalMongoose);
 userSchema.plugin(passportLocalMongoose);

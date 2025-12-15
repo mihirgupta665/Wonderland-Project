@@ -114,4 +114,9 @@ body{
     padding-right: 0 !important;
 }
 
+#map {
+    height: 400px;
+    width: 49vw;
+}
+
 
