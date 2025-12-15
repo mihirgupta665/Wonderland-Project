@@ -26,6 +26,7 @@ const User = require("./models/user.js");
 // npm i multer is a node.js middleware used to parse multipart/form-data i.e. forms having files uploaded.
 const multer = require("multer");
 let upload = multer({dest : "uploads/ "});
+// npm install @mapbox/mapbox-sdk  : need to be installed its a good mapbox-sdk
 
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");

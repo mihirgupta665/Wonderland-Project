@@ -1,4 +1,14 @@
 const Listing = require("../models/listing.js");
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');      
+let mapToken = process.env.MAP_TOKEN;
+const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+
+/* 
+    requireing the mapbox sdk services geocoding
+    then we need a maptoken og mapnox
+    then through the documentation using the Geocoding
+    then in our js funtion the object is used according to documentation to 
+*/
 
 module.exports.index = async (req, res) => {
     let listings = await Listing.find({});
@@ -11,6 +21,16 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 module.exports.createListing = async (req, res, next) => {
+    let response = await geocodingClient.forwardGeocode({
+        query: req.body.listing.location,       // query takes te location fo geoencoding
+        limit: 1            // limits take the object number for coordinates
+    })
+        .send();
+
+    console.log(response.body.features[0].geometry);
+    res.send("done");
+    
+        
     let url = req.file.path;
     let filename = req.file.filename;
     // console.log(url, "..", filename);
