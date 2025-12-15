@@ -26,10 +26,6 @@ module.exports.createListing = async (req, res, next) => {
         limit: 1            // limits take the object number for coordinates
     })
         .send();
-
-    console.log(response.body.features[0].geometry);
-    res.send("done");
-    
         
     let url = req.file.path;
     let filename = req.file.filename;
@@ -37,8 +33,10 @@ module.exports.createListing = async (req, res, next) => {
     let { listing } = req.body;
     let newlisting = await new Listing(listing);
     newlisting.owner = req.user._id; 
-    newlisting.image= {filename, url};
-    await newlisting.save();
+    newlisting.image = {filename, url};
+    newlisting.geometry = response.body.features[0].geometry;
+    let savedListing = await newlisting.save();
+    console.log(savedListing);
 
     // creating a flash message  for each successfull addition of listing
     req.flash("success", "New Listing Created Successfully!");
