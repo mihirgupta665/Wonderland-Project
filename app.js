@@ -67,7 +67,7 @@ app.use(methodOverride("_method"));
 const store = MongoStore.create({           // MongoStore directly stores the sessions in a collection named sessions
     mongoUrl: dbUrl, // first mongodb database url need to be mentioned, at this the session info will be stroed 
     crypto: {
-        secret: "MySuperSecretCode"
+        secret: process.env.SECRET
     },
     touchAfter: 86400,
 });
@@ -78,7 +78,7 @@ store.on("error", (err)=>{
 app.use(session(
     {
         store,  
-        secret: "MySuperSecretCode",
+        secret: process.env.SECRET, 
         resave: false,
         saveUninitialized: true,
         cookie: {
@@ -164,19 +164,19 @@ app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));
 });
 
-// app.use((err, req, res, next) => {
-//     console.log(err);
-//     let { status = 500, message = "Somthing Went Wrong!" } = err;
-//     res.status(status).render("error", { err });
-//     console.log(err.name);
-
-// });
-
 app.use((err, req, res, next) => {
-    console.error("ERROR HANDLER CAUGHT:", err);  // full error + stack
-    const { status = 500, message = "Something went wrong!" } = err;
-    res.status(status).send(`<h1>${status}</h1><p>${message}</p>`);
+    console.log(err);
+    let { status = 500, message = "Somthing Went Wrong!" } = err;
+    res.status(status).render("error", { err });
+    console.log(err.name);
+
 });
+
+// app.use((err, req, res, next) => {
+//     console.error("ERROR HANDLER CAUGHT:", err);  // full error + stack
+//     const { status = 500, message = "Something went wrong!" } = err;
+//     res.status(status).send(`<h1>${status}</h1><p>${message}</p>`);
+// });
 
 
 // Form Validation : When we enter the data iun the form the browser must check whether the data is properly formated and obeys all the constraint set by the application.
@@ -188,3 +188,5 @@ app.use((err, req, res, next) => {
 // cookies : HTTP cookies are small block of data created be a web server while a user is browsing a website and placed on user's coumputer or other device by user's web browser.
 // npm i cookie-parser, parse name cookie and print hi and name should have anonymous as the default value
 // signedCookie
+
+// during deployment engine need to be specified with node version so that playform of deployment could understand which version of node to use
