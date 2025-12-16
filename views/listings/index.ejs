@@ -2,9 +2,70 @@
 <% layout("layouts/boilerplate") %>
     <!-- are component are passed in the layout page as components -->
 
+    <style>
+        #filters{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .filter{
+            text-align : center;
+            margin-left : 2rem;
+            margin-top: 2rem;
+            opacity: 0.75;
+            cursor: pointer;
+        }
+        .filter:hover{
+            opacity:1;
+            
+        }
+    </style>
+
     <body>
+        <div class="filters" id="filters">
+            <div class="filter">
+                <div><i class="fa-solid fa-fire"></i></div>
+                <p>Trending</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-bed"></i></div>
+                <p>Rooms</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-mountain-city"></i></div>
+                <p>iconic cities</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-mountain"></i></div>
+                <p>Mountains</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-fire"></i></div>
+                <p>Trending</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-brands fa-fort-awesome"></i></div>
+                <p>Castle</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-person-swimming"></i></div>
+                <p>Amazing Pools</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-campground"></i></div>
+                <p>Camping</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-cow"></i></div>
+                <p>Farms</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-regular fa-snowflake"></i></div>
+                <p>Arctic</p>
+            </div>
+        </div>
+
         <br>
-        <h1>All Listings</h1>
+        <!-- <h1>All Listings</h1> -->
         <!-- <form method="get" action="/listings/new">
         <button>Add new listing</button>
     </form> -->
@@ -12,20 +73,22 @@
         <div class="row row-cols-lg-3 row-col-md-2 row-cols-sm-1">
             <% for(let listing of listings){ %>
                 <a href="/listings/<%=listing._id%>" class="listing-link">
-                    <div class="card col listing-card" >
+                    <div class="card col listing-card">
                         <img src="<%= listing.image.url %>" class="card-img-top" alt="listing" style="height: 20rem;">
                         <!-- card-img-overlay : if one want to add text or icon above images we could use this image overlap property-->
                         <div class="card-img-overlay"></div>
                         <div class="card-body">
                             <p class="card-text">
-                                <b><%= listing.title %></b>
+                                <b>
+                                    <%= listing.title %>
+                                </b>
                                 <br>
                                 &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
                             </p>
                         </div>
                     </div>
                 </a>
-            <% } %>
+                <% } %>
         </div>
 
 
