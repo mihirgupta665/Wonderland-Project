@@ -4,6 +4,7 @@ if(process.env.NODE_ENV != "production"){       // when NODE.ENV is not producti
 // console.log(process.env);  // we coould access the .env file 
 // npm i cloudinary and npm i multi-storage-cloudinary is used tp connect with cloudinary and using multer to upload certain files to cloudinary
 
+
 const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
@@ -15,6 +16,8 @@ const Listings = require("./routes/listings.js");
 const Reviews = require("./routes/reviews.js");
 const Users = require("./routes/user.js");
 const session = require("express-session");
+// connect-mongo : is used as session storage
+const MongoStore = require("connect-mongo").default;
 const flash = require("connect-flash");
 // npm i joi is used to validate are schema
 // const passport = require("passport");       // passport is needed for authetication
@@ -32,7 +35,26 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 
+
 const app = express();
+
+
+const dbUrl = process.env.ATLAS_DBURL;
+
+mongoose.connect(dbUrl)
+    .then(() => {
+        console.log("MongoDB connected");
+        console.log("Connected DB:", mongoose.connection.name);
+        console.log("Host:", mongoose.connection.host);
+
+        app.listen(8080, () => {
+            console.log("Listening through port : 8080");
+        });
+    })
+    .catch(err => {
+        console.error("Mongo connection error:", err);
+    });
+
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
@@ -41,8 +63,21 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+
+const store = MongoStore.create({           // MongoStore directly stores the sessions in a collection named sessions
+    mongoUrl: dbUrl, // first mongodb database url need to be mentioned, at this the session info will be stroed 
+    crypto: {
+        secret: "MySuperSecretCode"
+    },
+    touchAfter: 86400,
+});
+store.on("error", (err)=>{
+    console.log("Error in Mongo Session Store : "+err);
+});
+
 app.use(session(
     {
+        store,  
         secret: "MySuperSecretCode",
         resave: false,
         saveUninitialized: true,
@@ -53,6 +88,8 @@ app.use(session(
         }
     }
 ));    // creating session for porject
+
+
 
 // passport need to be initialized.
 // passport must be active for the entire session
@@ -91,21 +128,6 @@ app.use((req, res, next) => {
 //     console.log("Listening through port  : " + 8080);
 // })
 
-const dbUrl = process.env.ATLAS_DBURL;
-
-mongoose.connect(dbUrl)
-    .then(() => {
-        console.log("MongoDB connected");
-        console.log("Connected DB:", mongoose.connection.name);
-        console.log("Host:", mongoose.connection.host);
-
-        app.listen(8080, () => {
-            console.log("Listening through port : 8080");
-        });
-    })
-    .catch(err => {
-        console.error("Mongo connection error:", err);
-    });
 
 
 
