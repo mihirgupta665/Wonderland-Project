@@ -87,19 +87,27 @@ app.use((req, res, next) => {
     next();
 });
 
-app.listen(8080, () => {
-    console.log("Listening through port  : " + 8080);
-})
+// app.listen(8080, () => {
+//     console.log("Listening through port  : " + 8080);
+// })
 
-async function main() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/wonderland");
-}
+const dbUrl = process.env.ATLAS_DBURL;
 
-main().then((res) => {
-    console.log("Connection Established");
-}).catch((err) => {
-    console.log("Error in connecting mongodb database : " + err);
-});
+mongoose.connect(dbUrl)
+    .then(() => {
+        console.log("MongoDB connected");
+        console.log("Connected DB:", mongoose.connection.name);
+        console.log("Host:", mongoose.connection.host);
+
+        app.listen(8080, () => {
+            console.log("Listening through port : 8080");
+        });
+    })
+    .catch(err => {
+        console.error("Mongo connection error:", err);
+    });
+
+
 
 // function is wrapping the joy object so that it could be usd as a middleware function
 
@@ -130,6 +138,7 @@ app.use("/listings/:id/reviews", Reviews);
 // user route
 
 app.use((req, res, next) => {
+    console.error("Error URL    :", req.originalUrl);
     next(new ExpressError(404, "Page Not Found"));
 });
 
