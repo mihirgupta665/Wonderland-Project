@@ -103,10 +103,7 @@ main().then((res) => {
 
 // function is wrapping the joy object so that it could be usd as a middleware function
 
-// home api
-app.get("/", (req, res) => {
-    res.send("Server is Working Fine!!!");
-})
+
 
 app.get("/demouser", async (req, res) => {
     let fakeUser = new User({
