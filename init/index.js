@@ -8,7 +8,7 @@ const Listing = require("../models/listing.js");
 
 async function initializeDB(){
     console.log("Initializing MongoDB...");
-    await Listing.deleteMany({});
+    // await Listing.deleteMany({});
     // to add miscellaneous property in object use map function   ...obj to desrtucture object then commaa sapareted properties to add on more propertities.
     initdata.data = initdata.data.map((obj) => ({ ...obj, owner: "693996aadc081af45a556770" }) );
     await Listing.insertMany(initdata.data);

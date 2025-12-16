@@ -150,7 +150,9 @@ app.get("/demouser", async (req, res) => {
 //     next();
 // });
 
-
+app.get("/", (req, res)=>{
+    res.redirect("/listings");
+})
 //Routers
 app.use("/", Users);
 // listign route
