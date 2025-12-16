@@ -3,20 +3,28 @@
     <!-- are component are passed in the layout page as components -->
 
     <style>
-        #filters{
+        #filters {
             display: flex;
             flex-wrap: wrap;
         }
-        .filter{
-            text-align : center;
-            margin-left : 2rem;
+
+        .filter {
+            text-align: center;
+            margin-left: 2rem;
             margin-top: 2rem;
             opacity: 0.75;
             cursor: pointer;
         }
-        .filter:hover{
-            opacity:1;
-            
+
+        .filter:hover {
+            opacity: 1;
+
+        }
+
+        .taxInfo{
+            /* visibility :  hidden;      -> element is juts invisible (does occupy the space)  */
+            /* display : none;       -> removes the element from the document(does not occupy any space) */
+            display:none;  
         }
     </style>
 
@@ -62,6 +70,15 @@
                 <div><i class="fa-regular fa-snowflake"></i></div>
                 <p>Arctic</p>
             </div>
+            <div class="tax-toggle">
+                <div class="form-check form-switch d-flex align-items-center gap-5">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">
+                        <b>Display Total After Taxes</b>
+                    </label>
+                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                </div>
+            </div>
+
         </div>
 
         <br>
@@ -84,6 +101,7 @@
                                 </b>
                                 <br>
                                 &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+                                <i class="taxInfo"> &nbsp; &nbsp; +18% GST</i>
                             </p>
                         </div>
                     </div>
@@ -91,5 +109,20 @@
                 <% } %>
         </div>
 
+
+        <script>
+            let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+            taxSwitch.addEventListener("click", ()=>{
+                let taxInfo = document.getElementsByClassName("taxInfo");
+                for(info of taxInfo){
+                    if(info.style.display != "inline"){
+                        info.style.display = "inline"; 
+                    }
+                    else{
+                        info.style.display = "none";
+                    }
+                }
+            })
+        </script>
 
     </body>
