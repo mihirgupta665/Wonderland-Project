@@ -1,3 +1,19 @@
+<style>
+    .btn-search {
+        /* background-color: #198754;
+        color:white; */
+        padding: 0 1rem 0 1rem;
+    }
+    .btn-search i {
+        display: inline;
+        margin-right:0.5rem;
+    }
+
+    .input-search {
+        padding: 0.5rem 3rem 0.5rem 3rem;
+    }
+</style>
+
 <nav class="navbar navbar-expand-md navbar-light bg-body-light border-bottom sticky-top">
     <div class="container-fluid">
         <!-- font awesome file will be copied and pasted but will work only if you add its cdn from font awesome cdn  -->
@@ -12,13 +28,20 @@
                 <a class="nav-link" href="/listings/new">Add new Listing</a>
             </div>
             <div class="navbar-nav ms-auto">
+                <form class="d-flex">
+                    <input class="form-control me-2 input-search" type="search" placeholder="Search destinations" >
+                    <button class="btn btn-outline-success btn-search" type="submit"><i
+                            class="fa-solid fa-magnifying-glass"></i>Search</button>
+                </form>
+            </div>
+            <div class="navbar-nav ms-auto">
                 <% if(!currUser) { %>
-                <a class="nav-link"  href="/SignUp"><b>SignUp</b></a>
-                <a class="nav-link" href="/LogIn"><b>LogIn</b></a>
-                <% } %>
-                <% if(currUser) { %>
-                <a class="nav-link" href="/LogOut"><b>LogOut</b></a>
-                <% } %>
+                    <a class="nav-link" href="/SignUp"><b>SignUp</b></a>
+                    <a class="nav-link" href="/LogIn"><b>LogIn</b></a>
+                    <% } %>
+                        <% if(currUser) { %>
+                            <a class="nav-link" href="/LogOut"><b>LogOut</b></a>
+                            <% } %>
             </div>
         </div>
     </div>
