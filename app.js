@@ -1,3 +1,32 @@
+const fs = require("fs");
+const path = require("path");
+
+// Handle favicon migration and cleanup
+try {
+    const rootFaviconPng = path.join(__dirname, "favicon.png");
+    const publicFaviconPng = path.join(__dirname, "public", "favicon.png");
+    const rootFaviconIco = path.join(__dirname, "favicon.ico");
+
+    // If the new favicon is in the root, move it to the public directory
+    if (fs.existsSync(rootFaviconPng)) {
+        const publicDir = path.join(__dirname, "public");
+        if (!fs.existsSync(publicDir)) {
+            fs.mkdirSync(publicDir, { recursive: true });
+        }
+        fs.copyFileSync(rootFaviconPng, publicFaviconPng);
+        fs.unlinkSync(rootFaviconPng);
+        console.log("Moved favicon.png from root to public/");
+    }
+
+    // Delete the old favicon.ico from root if it exists
+    if (fs.existsSync(rootFaviconIco)) {
+        fs.unlinkSync(rootFaviconIco);
+        console.log("Deleted old favicon.ico from root");
+    }
+} catch (err) {
+    console.error("Error managing favicon files:", err.message);
+}
+
 if(process.env.NODE_ENV != "production"){       // when NODE.ENV is not production only then we will use dotenv else we will hide it.. 
     require('dotenv').config();     // dotenv is used to use env variable in backend 
 }
@@ -76,7 +105,7 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/favicon.ico", (req, res) => {
-    res.sendFile(path.join(__dirname, "favicon.ico"));
+    res.sendFile(path.join(__dirname, "public", "favicon.png"));
 });
 app.use(express.urlencoded({ extended: true }));
 app.use(parseNestedBody); // Parse multipart/urlencoded form bodies to nested structures
