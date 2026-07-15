@@ -34,15 +34,28 @@ const app = express();
 
 const dbUrl = process.env.ATLAS_DBURL;
 
-mongoose.connect(dbUrl)
-    .then(() => {
-        console.log("MongoDB connected");
-        console.log("Connected DB:", mongoose.connection.name);
-        console.log("Host:", mongoose.connection.host);
-    })
-    .catch(err => {
-        console.error("Mongo connection error:", err);
-    });
+async function connectDBWithRetry(maxRetries = 5, delayMs = 2000) {
+    let attempts = 0;
+    while (attempts < maxRetries) {
+        try {
+            await mongoose.connect(dbUrl);
+            console.log("MongoDB connected successfully!");
+            console.log("Connected DB:", mongoose.connection.name);
+            console.log("Host:", mongoose.connection.host);
+            return;
+        } catch (err) {
+            attempts++;
+            console.error(`MongoDB connection attempt ${attempts}/${maxRetries} failed:`, err.message);
+            if (attempts >= maxRetries) {
+                console.error("All MongoDB connection attempts failed. Exiting process...");
+                process.exit(1);
+            }
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+    }
+}
+
+connectDBWithRetry();
 
 if (!process.env.VERCEL) {
     const port = process.env.PORT || 8080;
@@ -160,6 +173,9 @@ app.get("/demouser", async (req, res) => {
 app.get("/", (req, res)=>{
     res.redirect("/listings");
 })
+app.get("/ping", (req, res) => {
+    res.json({ status: "ok" });
+});
 //Routers
 app.use("/", Users);
 // listign route
