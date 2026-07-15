@@ -530,7 +530,7 @@ Please ensure your code follows the existing project structure and coding style.
 
 # 📄 License
 
-This project is licensed under the **MIT License**.
+This project is made only for exploring and learning purpose.
 
 You are free to use, modify, and distribute this project for educational and personal purposes.
 

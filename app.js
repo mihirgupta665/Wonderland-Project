@@ -37,7 +37,6 @@ if(process.env.NODE_ENV != "production"){       // when NODE.ENV is not producti
 const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
-const path = require("path");
 const ejsMate = require("ejs-mate");    // ejs-mate is used to create a styled template
 const asyncWrap = require("./utility/asyncWrap.js");
 const ExpressError = require("./utility/ExpressError.js");
