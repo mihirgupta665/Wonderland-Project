@@ -31,6 +31,7 @@ const morgan = require("morgan");
 const { parseNestedBody } = require("./middleware.js");
 
 const app = express();
+app.set("trust proxy", 1); // Trust Render's reverse proxy for secure cookies
 
 const dbUrl = process.env.ATLAS_DBURL;
 
