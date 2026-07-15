@@ -1,142 +1,458 @@
-<!-- we want layout so will write layout("path(after view directory, as already specified)")-->
 <% layout("layouts/boilerplate") %>
-    <!-- are component are passed in the layout page as components -->
 
-    <style>
-        #filters {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+<style>
+    /* Category Filters Section */
+    #filters-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .filter-pills-container {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        scrollbar-width: none; /* Hide scrollbar for clean look */
+        max-width: 75%;
+    }
+    .filter-pills-container::-webkit-scrollbar {
+        display: none;
+    }
 
-        .filter {
-            text-align: center;
-            margin-left: 2rem;
-            margin-top: 2rem;
-            opacity: 0.75;
-            cursor: pointer;
-        }
+    .filter-pill {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        opacity: 0.65;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 60px;
+        color: #222;
+        text-decoration: none !important;
+    }
+    
+    .filter-pill i {
+        font-size: 1.3rem;
+        margin-bottom: 0.35rem;
+    }
 
-        .filter:hover {
-            opacity: 1;
+    .filter-pill p {
+        font-size: 0.75rem;
+        margin: 0;
+        font-weight: 600;
+        white-space: nowrap;
+    }
 
-        }
+    .filter-pill:hover, .filter-pill.active {
+        opacity: 1;
+        color: #fe424d;
+        transform: translateY(-2px);
+    }
+    
+    .filter-pill.active {
+        border-bottom: 2px solid #fe424d;
+        padding-bottom: 2px;
+    }
 
-        .taxInfo {
-            /* visibility :  hidden;      -> element is juts invisible (does occupy the space)  */
-            /* display : none;       -> removes the element from the document(does not occupy any space) */
-            display: none;
-        }
+    /* Controls: Sort and Tax Toggle */
+    .controls-container {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
 
-        .tax-toggle {
-            border: 1px solid black;
-            border-radius: 1rem;
-            height: 45px;
-            padding: 9px 23px 1px 0px;
-            /* padding-bottom: 2rem; */
-            margin-left: 25px;
-        }
+    .tax-toggle {
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        padding: 0.5rem 1.25rem;
+        display: flex;
+        align-items: center;
+        height: 38px;
+        background: #fff;
+    }
 
-        .form-switch {
-            padding-left: 1.5em;
-        }
-    </style>
+    .form-switch .form-check-input {
+        cursor: pointer;
+    }
+    .form-switch .form-check-input:checked {
+        background-color: #fe424d;
+        border-color: #fe424d;
+    }
 
-    <body>
-        <div class="filters" id="filters">
-            <div class="filter">
-                <div><i class="fa-solid fa-fire"></i></div>
-                <p>Trending</p>
+    /* Listing Cards Styling */
+    .listing-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .listing-card {
+        border: none !important;
+        border-radius: 1rem !important;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        position: relative;
+        background: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .listing-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    }
+
+    .card-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        aspect-ratio: 4/3;
+    }
+
+    .listing-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .listing-card:hover img {
+        transform: scale(1.06);
+    }
+
+    /* Heart / Favorite Overlay Button */
+    .btn-favorite {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.2s ease;
+    }
+
+    .btn-favorite:hover {
+        transform: scale(1.1);
+        background: #fff;
+    }
+
+    .btn-favorite i {
+        font-size: 1.1rem;
+        color: #888;
+        transition: color 0.2s ease;
+    }
+
+    .btn-favorite.is-fav i {
+        color: #fe424d;
+        animation: heartBeat 0.3s ease;
+    }
+
+    /* Availability Badges */
+    .availability-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: white;
+        z-index: 10;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+    
+    .badge-available { background-color: #2ec4b6; }
+    .badge-booked { background-color: #ff9f1c; }
+    .badge-rented { background-color: #011627; }
+    .badge-unavailable { background-color: #e71d36; }
+
+    /* Ratings Tag */
+    .rating-tag {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .rating-tag i {
+        color: #ffb703;
+    }
+
+    .card-body {
+        padding: 0.85rem 0.25rem 0.25rem 0.25rem;
+    }
+
+    .card-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-location {
+        font-size: 0.85rem;
+        color: #717171;
+        margin-bottom: 0.35rem;
+    }
+
+    .card-price {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #222;
+    }
+
+    .taxInfo {
+        display: none;
+        color: #717171;
+        font-size: 0.85rem;
+        font-weight: 400;
+    }
+
+    @keyframes heartBeat {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+    }
+</style>
+
+<body>
+    <!-- Filter Bar and Controls -->
+    <div id="filters-bar">
+        <div class="filter-pills-container">
+            <% 
+            const categories = [
+                { name: 'Trending', icon: 'fa-solid fa-fire' },
+                { name: 'Rooms', icon: 'fa-solid fa-bed' },
+                { name: 'Iconic Cities', icon: 'fa-solid fa-mountain-city' },
+                { name: 'Mountains', icon: 'fa-solid fa-mountain' },
+                { name: 'Castles', icon: 'fa-brands fa-fort-awesome' },
+                { name: 'Pools', icon: 'fa-solid fa-person-swimming' },
+                { name: 'Camping', icon: 'fa-solid fa-campground' },
+                { name: 'Farms', icon: 'fa-solid fa-cow' },
+                { name: 'Arctic', icon: 'fa-regular fa-snowflake' }
+            ];
+            const activeCategory = (typeof filters !== 'undefined') ? filters.category : '';
+            %>
+            <div class="filter-pill <%= !activeCategory ? 'active' : '' %>" data-category="">
+                <i class="fa-solid fa-border-all"></i>
+                <p>All</p>
             </div>
-            <div class="filter">
-                <div><i class="fa-solid fa-bed"></i></div>
-                <p>Rooms</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-solid fa-mountain-city"></i></div>
-                <p>iconic cities</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-solid fa-mountain"></i></div>
-                <p>Mountains</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-solid fa-fire"></i></div>
-                <p>Trending</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-brands fa-fort-awesome"></i></div>
-                <p>Castle</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-solid fa-person-swimming"></i></div>
-                <p>Amazing Pools</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-solid fa-campground"></i></div>
-                <p>Camping</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-solid fa-cow"></i></div>
-                <p>Farms</p>
-            </div>
-            <div class="filter">
-                <div><i class="fa-regular fa-snowflake"></i></div>
-                <p>Arctic</p>
-            </div>
+            <% for (let cat of categories) { %>
+                <div class="filter-pill <%= activeCategory === cat.name ? 'active' : '' %>" data-category="<%= cat.name %>">
+                    <i class="<%= cat.icon %>"></i>
+                    <p><%= cat.name %></p>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="controls-container">
+            <!-- Advanced Sorting Dropdown -->
+            <select class="form-select" id="sort-select" style="width: auto; border-radius: 20px; font-size: 0.85rem; height: 38px; cursor: pointer; border-color: #ddd;">
+                <option value="">Sort by...</option>
+                <option value="newest" <%= (typeof filters !== 'undefined' && filters.sort === 'newest') ? 'selected' : '' %>>Newest Listings</option>
+                <option value="oldest" <%= (typeof filters !== 'undefined' && filters.sort === 'oldest') ? 'selected' : '' %>>Oldest Listings</option>
+                <option value="priceHigh" <%= (typeof filters !== 'undefined' && filters.sort === 'priceHigh') ? 'selected' : '' %>>Price: High to Low</option>
+                <option value="priceLow" <%= (typeof filters !== 'undefined' && filters.sort === 'priceLow') ? 'selected' : '' %>>Price: Low to High</option>
+                <option value="highestRated" <%= (typeof filters !== 'undefined' && filters.sort === 'highestRated') ? 'selected' : '' %>>Highest Rated</option>
+            </select>
+
+            <!-- Tax Toggle Switch -->
             <div class="tax-toggle">
-                <div class="form-check form-switch d-flex align-items-center gap-5">
-                    <label class="form-check-label" for="flexSwitchCheckDefault">
-                        <b>Display Total After Taxes</b>
-                    </label>
+                <div class="form-check form-switch d-flex align-items-center gap-2">
                     <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                    <label class="form-check-label fw-bold" for="flexSwitchCheckDefault" style="font-size: 0.8rem; cursor: pointer; user-select: none;">Taxes</label>
                 </div>
             </div>
-
         </div>
+    </div>
 
-        <br>
-        <!-- <h1>All Listings</h1> -->
-        <!-- <form method="get" action="/listings/new">
-        <button>Add new listing</button>
-    </form> -->
-
-        <div class="row row-cols-lg-3 row-col-md-2 row-cols-sm-1">
+    <!-- Properties Grid -->
+    <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 gy-5">
+        <% if (listings.length === 0) { %>
+            <div class="col-12 text-center my-5 py-5">
+                <i class="fa-regular fa-folder-open text-muted mb-3" style="font-size: 3.5rem;"></i>
+                <h4 class="text-muted">No properties found matching your criteria</h4>
+                <a href="/listings" class="btn btn-danger mt-3" style="border-radius: 20px; background-color: #fe424d;">Reset Filters</a>
+            </div>
+        <% } else { %>
             <% for(let listing of listings){ %>
-                <a href="/listings/<%=listing._id%>" class="listing-link">
-                    <div class="card col listing-card">
-                        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing" style="height: 20rem;">
-                        <!-- card-img-overlay : if one want to add text or icon above images we could use this image overlap property-->
-                        <div class="card-img-overlay"></div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <b>
-                                    <%= listing.title %>
-                                </b>
-                                <br>
-                                &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
-                                    <i class="taxInfo"> &nbsp; &nbsp; +18% GST</i>
-                            </p>
+                <div class="col">
+                    <a href="/listings/<%=listing._id%>" class="listing-link">
+                        <div class="card listing-card">
+                            <div class="card-img-wrapper">
+                                <!-- Favorite Heart Toggle -->
+                                <button class="btn-favorite <%= (currUser && currUser.favorites.some(favId => favId.toString() === listing._id.toString())) ? 'is-fav' : '' %>" 
+                                        data-id="<%= listing._id %>" 
+                                        onclick="toggleFav(event, this)">
+                                    <i class="<%= (currUser && currUser.favorites.some(favId => favId.toString() === listing._id.toString())) ? 'fa-solid fa-heart' : 'fa-regular fa-heart' %>"></i>
+                                </button>
+                                
+                                <!-- Availability Badge -->
+                                <span class="availability-badge badge-<%= listing.availability.toLowerCase() %>">
+                                    <%= listing.availability %>
+                                </span>
+
+                                <!-- Star Ratings Overlay -->
+                                <% if(listing.reviews && listing.reviews.length > 0) { %>
+                                    <% 
+                                    let sum = listing.reviews.reduce((s, r) => s + r.ratings, 0);
+                                    let avg = (sum / listing.reviews.length).toFixed(1);
+                                    %>
+                                    <span class="rating-tag">
+                                        <i class="fa-solid fa-star"></i> <%= avg %> (<%= listing.reviews.length %>)
+                                    </span>
+                                <% } %>
+
+                                <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                            </div>
+                            
+                            <div class="card-body">
+                                <h5 class="card-title"><%= listing.title %></h5>
+                                <p class="card-location"><i class="fa-solid fa-location-dot me-1 text-danger"></i><%= listing.location %>, <%= listing.country %></p>
+                                <p class="card-price">
+                                    <span class="fw-bold">&#8377; <%= listing.price.toLocaleString("en-IN") %></span> / night
+                                    <span class="taxInfo"> &nbsp; &nbsp; +18% GST (&#8377; <%= (listing.price * 0.18).toLocaleString("en-IN") %>)</span>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-                <% } %>
-        </div>
+                    </a>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
 
-
-        <script>
-            let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-            taxSwitch.addEventListener("click", () => {
-                let taxInfo = document.getElementsByClassName("taxInfo");
-                for (info of taxInfo) {
-                    if (info.style.display != "inline") {
-                        info.style.display = "inline";
-                    }
-                    else {
-                        info.style.display = "none";
-                    }
+    <!-- Client-Side Logic for Filters, Sorting, Favorites and Taxes -->
+    <script>
+        // Filters Action Redirect
+        const pills = document.querySelectorAll(".filter-pill");
+        pills.forEach(pill => {
+            pill.addEventListener("click", () => {
+                const category = pill.dataset.category;
+                const urlParams = new URLSearchParams(window.location.search);
+                if (category) {
+                    urlParams.set("category", category);
+                } else {
+                    urlParams.delete("category");
                 }
-            })
-        </script>
+                window.location.search = urlParams.toString();
+            });
+        });
 
-    </body>
+        // Sorting Action Redirect
+        const sortSelect = document.getElementById("sort-select");
+        sortSelect.addEventListener("change", (e) => {
+            const val = e.target.value;
+            const urlParams = new URLSearchParams(window.location.search);
+            if (val) {
+                urlParams.set("sort", val);
+            } else {
+                urlParams.delete("sort");
+            }
+            window.location.search = urlParams.toString();
+        });
+
+        // Tax Switch Logic
+        let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+        taxSwitch.addEventListener("click", () => {
+            let taxInfo = document.getElementsByClassName("taxInfo");
+            for (let info of taxInfo) {
+                info.style.display = taxSwitch.checked ? "inline" : "none";
+            }
+        });
+
+        // Client-side dynamic flash message handler
+        function showFlash(message, type = "success") {
+            const container = document.getElementById("main-container") || document.body;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show col-md-8 mt-2 offset-md-2`;
+            alertDiv.setAttribute("role", "alert");
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                    const bsAlert = new bootstrap.Alert(alertDiv);
+                    bsAlert.close();
+                } else {
+                    alertDiv.style.transition = "opacity 0.5s ease";
+                    alertDiv.style.opacity = "0";
+                    setTimeout(() => alertDiv.remove(), 500);
+                }
+            }, 5000);
+        }
+
+        // Toggle Favorites API Call
+        async function toggleFav(event, element) {
+            event.preventDefault(); // Stop click from bubbling and navigating to details page
+            const id = element.dataset.id;
+            
+            try {
+                // Show loading indicator
+                const loadingOverlay = document.getElementById("loading-overlay");
+                if (loadingOverlay) loadingOverlay.classList.remove("d-none");
+
+                const response = await fetch(`/listings/${id}/favorite`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                
+                if (loadingOverlay) loadingOverlay.classList.add("d-none");
+
+                if (response.status === 401 || response.redirected) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    if (data.isFavorite) {
+                        element.classList.add("is-fav");
+                        element.querySelector("i").className = "fa-solid fa-heart";
+                        showFlash(`${data.title} added to your favorite list`, "success");
+                    } else {
+                        element.classList.remove("is-fav");
+                        element.querySelector("i").className = "fa-regular fa-heart";
+                        showFlash(`${data.title} removed from your favorite list`, "danger");
+                    }
+                } else {
+                    console.error("Favorite toggle error:", data.message);
+                }
+            } catch (err) {
+                console.error("Error toggling favorite:", err);
+                const loadingOverlay = document.getElementById("loading-overlay");
+                if (loadingOverlay) loadingOverlay.classList.add("d-none");
+                window.location.href = "/login";
+            }
+        }
+    </script>
+</body>

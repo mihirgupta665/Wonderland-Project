@@ -37,27 +37,26 @@ router.get("/listingTest", (req, res) => {
 router.route("/")
     .get(asyncWrap(listingsController.index)) // index api
     .post(isLoggedIn,
-        // validateListing, 
         upload.single("listing[image][url]"), 
+        validateListing, 
         asyncWrap(listingsController.createListing)); // post listing
-// upload.single('field_name') : is used to upload to specified path file of the html form
-// .post(isLoggedIn, upload.single("listing[image][url]"), (req, res) => {
-//     res.send(req.file);// multer adds a new parameter to req named as 'file' containg the detailsof file of the post request
-// });
-
 
 // new listing
 router.get("/new", isLoggedIn, listingsController.renderNewForm);
 
+// Favorites list view (placed before /:id)
+router.get("/favorites", isLoggedIn, asyncWrap(listingsController.renderFavorites));
+
+// Toggle favorite endpoint
+router.post("/:id/favorite", isLoggedIn, asyncWrap(listingsController.toggleFavorite));
 
 router.route("/:id")
     .get(asyncWrap(listingsController.showListing)) // Read or Show Api
     .put(isLoggedIn, isOwner,
         upload.single("listing[image][url]"),
-        //  validateListing,
-          asyncWrap(listingsController.updateListing))     // update listing
+        validateListing,
+        asyncWrap(listingsController.updateListing))     // update listing
     .delete(isLoggedIn, isOwner, asyncWrap(listingsController.destroyListing));    // delete listing
-
 
 // edit route
 router.get("/:id/edit", isLoggedIn, isOwner, asyncWrap(listingsController.renderEditForm));

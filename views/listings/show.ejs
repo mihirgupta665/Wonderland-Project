@@ -1,128 +1,509 @@
 <% layout("layouts/boilerplate") %>
-  <script>
-    const mapToken = "<%= process.env.MAP_TOKEN %>"
+
+<style>
+    /* Details Container Styling */
+    .show-card {
+        border: none;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        background: #fff;
+    }
+    
+    .show-img {
+        width: 100%;
+        max-height: 480px;
+        object-fit: cover;
+    }
+
+    .detail-container {
+        padding: 1.75rem 2rem;
+    }
+
+    .show-title-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Favorites button on details page */
+    .btn-detail-fav {
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 20px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-detail-fav:hover {
+        background-color: #f7f7f7;
+        border-color: #fe424d;
+    }
+
+    .btn-detail-fav.is-fav {
+        background-color: #ffeef0;
+        border-color: #fe424d;
+        color: #fe424d;
+    }
+
+    .btn-detail-fav i {
+        font-size: 1rem;
+        transition: transform 0.2s ease;
+    }
+
+    .btn-detail-fav.is-fav i {
+        animation: heartBeat 0.3s ease;
+    }
+
+    /* Detail Icons / Badges */
+    .detail-badge {
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-available { background-color: #e6f9f6; color: #2ec4b6; border: 1px solid #2ec4b6; }
+    .badge-booked { background-color: #fff4e5; color: #ff9f1c; border: 1px solid #ff9f1c; }
+    .badge-rented { background-color: #e5f1f9; color: #011627; border: 1px solid #011627; }
+    .badge-unavailable { background-color: #ffebeb; color: #e71d36; border: 1px solid #e71d36; }
+
+    /* Map Styling */
+    #map {
+        height: 380px;
+        width: 100%;
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+    }
+
+    /* Review stats styling */
+    .rating-stat-card {
+        background: #f8f9fa;
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .progress-bar-stat {
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        flex-grow: 1;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background-color: #ffb703;
+        border-radius: 4px;
+    }
+
+    .stat-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .stat-label {
+        min-width: 50px;
+        font-weight: 600;
+    }
+    
+    .stat-count {
+        min-width: 30px;
+        text-align: right;
+        color: #717171;
+    }
+
+    /* Amenities Pills */
+    .amenity-pill {
+        display: inline-block;
+        background: #f1f3f5;
+        border: 1px solid #e9ecef;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .amenity-pill i {
+        color: #fe424d;
+    }
+
+    /* Reviews styling */
+    .review-card {
+        border: 1px solid #eee !important;
+        border-radius: 1rem !important;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        transition: transform 0.2s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+</style>
+
+<script>
+    const mapToken = "<%= mapToken %>";
     const listing = <%- JSON.stringify(listing) %>;
-  </script>
+</script>
 
-  <body>
-    <div class="row mt-3">
-      <div class="col-8 offset-3">
-        <h3>
-          <%= listing.title %>
-        </h3>
-      </div>
-      <div class="card col-6 offset-3 show-card listing-card">
-        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
-        <div class="card-body">
-          <span><b>Owned By</b></span>
-          <h4>- <i>
-              <%= listing.owner.username %>
-            </i></h4>
-          <p class="card-text">
-            <%= listing.description %>
-              <br>
-              &#8377; <%= listing.price.toLocaleString("en-IN") %> <br>
-                <%= listing.location %> <br>
-                  <%= listing.country %> <br>
-          </p>
-        </div>
-      </div>
-    </div>
-    <!-- current user details will be in the locals of currUSer and listing.owner._id will contain the owner id -->
-    <!-- if not loged in the curruser will be undefinded -->
-
-
-    <div class="btns mb-4">
-      <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
-      <form method="post" action="/listings/<%=listing._id%>?_method=DELETE">
-        <button class="btn btn-dark offset-5">Delete</button>
-      </form>
-    </div>
-    <hr>
-
-    <div class="col-8 offset-3 mb-3 review">
-      <h3>Where you will be : </h3>
-      <div id="map"></div>
-    </div>
-
-    <div class="col-8 offset-3 mb-3 review">
-      <% if(currUser) { %>
-        <h4>Leave a Review :</h4>
-        <form method="post" action="/listings/<%=listing.id%>/reviews" novalidate class="needs-validation">
-          <div class="mt-3 mb-3">
-            <label for="ratings" class="form-label">Rating : </label>
-            <fieldset class="starability-growRotate">
-              <input type="radio" id="no-rate" class="input-no-rate" name="review[ratings]" value="0" checked
-                aria-label="No rating." />
-              <input type="radio" id="first-rate1" name="review[ratings]" value="1" />
-              <label for="first-rate1" title="Terrible">1 star</label>
-              <input type="radio" id="first-rate2" name="review[ratings]" value="2" />
-              <label for="first-rate2" title="Not good">2 stars</label>
-              <input type="radio" id="first-rate3" name="review[ratings]" value="3" />
-              <label for="first-rate3" title="Average">3 stars</label>
-              <input type="radio" id="first-rate4" name="review[ratings]" value="4" />
-              <label for="first-rate4" title="Very good">4 stars</label>
-              <input type="radio" id="first-rate5" name="review[ratings]" value="5" />
-              <label for="first-rate5" title="Amazing">5 stars</label>
-            </fieldset>
-          </div>
-          <div class="mb-3">
-            <label for="comment" class="form-label">Comment : </label>
-            <textarea name="review[comment]" id="comment" cols="30" rows="7" class="form-control"
-              placeholder="Write you comment here ..." required></textarea>
-            <div class="valid-feedback">Comment looks Good!</div>
-            <div class="invalid-feedback">Please add comment for review</div>
-          </div>
-
-          <button class="btn btn-outline-dark">Submit</button>
-        </form>
-        <hr>
-        <% } %>
-          <% if(listing.reviews.length> 0) { %>
-            <div class="row">
-              <p><b>All Reviews</b></p>
-              <% for(review of listing.reviews) { %>
-                <div class="card col-5 ms-3 mb-3">
-                  <div class="card-body">
-                    <h5 class="card-title mt-2 mb-2">Author : <%= review.author.username %>
-                    </h5>
-                    <p class="starability-result class-text" data-rating="<%= review.ratings %>">
-                      Stars
-                    </p>
-                    <p class="card-text mb-3">
-                      <%= review.comment %>
-                    </p>
-                  </div>
-                  <form class="mb-3" method="post"
-                    action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                    <button class="btn btn-sm btn-dark">Delete</button>
-                  </form>
-                </div>
-                <% } %>
+<body>
+    <div class="row mt-4">
+        <!-- Title & Favorites Toggle Bar -->
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="show-title-bar">
+                <h2><%= listing.title %></h2>
+                <% 
+                const isFav = currUser && currUser.favorites.some(favId => favId.toString() === listing._id.toString());
+                %>
+                <button class="btn-detail-fav <%= isFav ? 'is-fav' : '' %>" 
+                        data-id="<%= listing._id %>" 
+                        onclick="toggleDetailFav(this)">
+                    <i class="<%= isFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart' %>"></i>
+                    <span id="fav-text"><%= isFav ? 'Favorited' : 'Add to Favorites' %></span>
+                </button>
             </div>
-            <% } %>
-    </div>
-    <!-- <script src="/js/map.js"></script> -->
-     <script>
-      
-        // let mapToken = mapToken; 
-        // console.log(mapToken);
+        </div>
 
-        /* Map_Token is accessible in ejs file only so we have define maptoken variable containing the value of map.token */
-        mapboxgl.accessToken = "<%= process.env.MAP_TOKEN %>";
-        console.log(mapToken);
+        <!-- Listing Details Card -->
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="card show-card mb-4">
+                <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="<%= listing.title %>">
+                <div class="detail-container">
+                    
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                        <div>
+                            <span>Hosted by</span>
+                            <h4 class="fw-bold d-inline-block text-danger ms-1"><i><%= listing.owner.username %></i></h4>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-secondary py-2 px-3 text-uppercase font-monospace" style="font-size: 0.75rem;"><%= listing.category %></span>
+                            <span class="detail-badge badge-<%= listing.availability.toLowerCase() %>">
+                                <%= listing.availability %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted" style="font-size: 1.05rem; line-height: 1.6;"><%= listing.description %></p>
+                    
+                    <hr>
+                    
+                    <!-- Pricing & Specs -->
+                    <div class="row my-4">
+                        <div class="col-md-6">
+                            <h5><b>Price Per Night:</b></h5>
+                            <h3 class="text-danger fw-bold">&#8377; <%= listing.price.toLocaleString("en-IN") %> <span class="fs-6 text-muted fw-normal">/ night</span></h3>
+                            <p class="text-muted small">+ 18% GST (&#8377; <%= (listing.price * 0.18).toLocaleString("en-IN") %>) charged at checkout.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><b>Location:</b></h5>
+                            <p class="mb-1"><i class="fa-solid fa-location-dot me-2 text-danger"></i><%= listing.location %></p>
+                            <p><i class="fa-solid fa-earth-americas me-2 text-danger"></i><%= listing.country %></p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Amenities section -->
+                    <% if(listing.amenities && listing.amenities.length > 0) { %>
+                        <div class="my-3">
+                            <h5 class="mb-3"><b>Offered Amenities:</b></h5>
+                            <div>
+                                <% 
+                                const iconMap = {
+                                    'Wifi': 'fa-solid fa-wifi',
+                                    'Kitchen': 'fa-solid fa-utensils',
+                                    'AC': 'fa-solid fa-snowflake',
+                                    'Pool': 'fa-solid fa-person-swimming',
+                                    'Parking': 'fa-solid fa-car',
+                                    'Gym': 'fa-solid fa-dumbbell',
+                                    'Freezer': 'fa-solid fa-ice-cream',
+                                    'Washing Machine': 'fa-solid fa-tshirt'
+                                };
+                                %>
+                                <% for(let amen of listing.amenities) { %>
+                                    <span class="amenity-pill">
+                                        <i class="<%= iconMap[amen] || 'fa-solid fa-circle-check' %> me-2"></i><%= amen %>
+                                    </span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <hr>
+                    <% } %>
+
+                    <!-- Booking/Inquiry Info -->
+                    <div class="my-2">
+                        <% if(listing.availability !== 'Available') { %>
+                            <div class="alert alert-warning d-flex align-items-center gap-3">
+                                <i class="fa-solid fa-triangle-exclamation fs-4"></i>
+                                <div>
+                                    <strong>Property is Currently <%= listing.availability %>!</strong><br>
+                                    Bookings are disabled until the host changes the availability status.
+                                </div>
+                            </div>
+                        <% } %>
+
+                        <div class="d-flex gap-2">
+                            <% if (currUser && currUser._id.equals(listing.owner._id)) { %>
+                                <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark px-4 py-2" style="border-radius: 20px;">Edit Properties</a>
+                                <form method="post" action="/listings/<%=listing._id%>?_method=DELETE">
+                                    <button class="btn btn-danger px-4 py-2" style="border-radius: 20px; background-color: #fe424d;">Delete Property</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="col-lg-8 offset-lg-2">
+
+        <!-- Reviews & Rating Section -->
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-3">
+            <div class="row">
+                
+                <!-- Review Form -->
+                <div class="col-md-6 mb-4">
+                    <% if(currUser) { %>
+                        <% if(listing.availability === 'Available') { %>
+                            <h4 class="mb-3">Leave a Review</h4>
+                            <form method="post" action="/listings/<%=listing._id%>/reviews" novalidate class="needs-validation">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Rating:</label>
+                                    <fieldset class="starability-growRotate">
+                                        <input type="radio" id="no-rate" class="input-no-rate" name="review[ratings]" value="1" checked aria-label="No rating." />
+                                        <input type="radio" id="first-rate1" name="review[ratings]" value="1" />
+                                        <label for="first-rate1" title="Terrible">1 star</label>
+                                        <input type="radio" id="first-rate2" name="review[ratings]" value="2" />
+                                        <label for="first-rate2" title="Not good">2 stars</label>
+                                        <input type="radio" id="first-rate3" name="review[ratings]" value="3" />
+                                        <label for="first-rate3" title="Average">3 stars</label>
+                                        <input type="radio" id="first-rate4" name="review[ratings]" value="4" />
+                                        <label for="first-rate4" title="Very good">4 stars</label>
+                                        <input type="radio" id="first-rate5" name="review[ratings]" value="5" />
+                                        <label for="first-rate5" title="Amazing">5 stars</label>
+                                    </fieldset>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comment" class="form-label fw-bold">Comment:</label>
+                                    <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" placeholder="Describe your experience..." required style="border-radius: 12px;"></textarea>
+                                    <div class="valid-feedback">Comment looks good!</div>
+                                    <div class="invalid-feedback">Please write a comment.</div>
+                                </div>
+                                <button class="btn btn-danger px-4" style="border-radius: 20px; background-color: #fe424d;">Submit Review</button>
+                            </form>
+                        <% } else { %>
+                            <div class="alert alert-secondary">Reviews can only be submitted for Available properties.</div>
+                        <% } %>
+                    <% } else { %>
+                        <div class="alert alert-info">Please <a href="/login">login</a> to leave a review.</div>
+                    <% } %>
+                </div>
+
+                <!-- Review Statistics -->
+                <div class="col-md-6 mb-4">
+                    <h4 class="mb-3">Rating Summary</h4>
+                    <div class="rating-stat-card text-center text-md-start">
+                        <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mb-3">
+                            <h1 class="display-3 fw-bold text-danger m-0"><%= avgRating %></h1>
+                            <div>
+                                <div class="text-warning fs-4">
+                                    <% for(let i=1; i<=5; i++) { %>
+                                        <i class="<%= i <= Math.round(avgRating) ? 'fa-solid fa-star' : 'fa-regular fa-star' %>"></i>
+                                    <% } %>
+                                </div>
+                                <div class="text-muted"><%= listing.reviews.length %> total reviews</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bars -->
+                        <% for (let star = 5; star >= 1; star--) { %>
+                            <% 
+                            let count = ratingDistribution[star] || 0;
+                            let percent = listing.reviews.length > 0 ? (count / listing.reviews.length * 100) : 0;
+                            %>
+                            <div class="stat-row">
+                                <span class="stat-label"><%= star %> ★</span>
+                                <div class="progress-bar-stat">
+                                    <div class="progress-bar-fill" style="width: <%= percent %>%"></div>
+                                </div>
+                                <span class="stat-count"><%= count %></span>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- List of Reviews -->
+            <% if(listing.reviews.length > 0) { %>
+                <hr>
+                <h5 class="my-4">Guest Comments</h5>
+                <div class="row">
+                    <% for(let review of listing.reviews) { %>
+                        <div class="col-md-6 mb-3">
+                            <div class="card review-card h-100">
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div>
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <h6 class="fw-bold m-0"><i class="fa-solid fa-circle-user me-2 text-secondary fs-5"></i><%= review.author.username %></h6>
+                                            <span class="text-muted small"><%= new Date(review.createdAt).toLocaleDateString() %></span>
+                                        </div>
+                                        <p class="starability-result" data-rating="<%= review.ratings %>">Rated: <%= review.ratings %> stars</p>
+                                        <p class="card-text text-muted" style="font-size: 0.92rem;"><%= review.comment %></p>
+                                    </div>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <% if(currUser && review.author.equals(currUser._id)) { %>
+                                            <a href="/listings/<%= listing._id %>/reviews/<%= review._id %>/edit" class="btn btn-sm btn-outline-secondary" style="border-radius: 12px;"><i class="fa-solid fa-pen-to-square me-1"></i>Edit</a>
+                                            <form method="post" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                                                <button class="btn btn-sm btn-outline-danger" style="border-radius: 12px;"><i class="fa-solid fa-trash me-1"></i>Delete</button>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+
+        <hr class="col-lg-8 offset-lg-2">
+
+        <!-- Geolocation / Mapbox Section -->
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 mb-5">
+            <h4 class="mb-3"><i class="fa-solid fa-map-location-dot me-2 text-danger"></i>Where you will be</h4>
+            <div class="position-relative">
+                <div id="map"></div>
+                <button id="recenter-btn" class="btn btn-light shadow-sm position-absolute" style="top: 100px; right: 10px; z-index: 10; border-radius: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc; padding: 0;" title="Recenter to Property">
+                    <i class="fa-solid fa-crosshairs text-danger" style="font-size: 14px;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client-Side Mapbox and Favorites API logic -->
+    <script>
+        // Set Mapbox access token
+        mapboxgl.accessToken = mapToken;
+        
+        // Initialize Map
         const map = new mapboxgl.Map({
-          container: 'map', // container ID
-          center: listing.geometry.coordinates, // starting position [lng, lat]. Note that lat must be set between -90 and 90
-          zoom: 10 // starting zoom
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: listing.geometry.coordinates,
+            zoom: 12
         });
 
-        // console.log("Coordinates", listing.geometry.coordinates);
-        const marker1 = new mapboxgl.Marker({ color: "red" })
-          .setLngLat(listing.geometry.coordinates)
-          .setPopup(new mapboxgl.Popup({ offset: 25 })
-            .setHTML(`<h3>${listing.location}</h3><p>Exact Location will be provided after booking</p`))
-          .addTo(map);
+        // Add Map Markers & Popup
+        const popup = new mapboxgl.Popup({ offset: 25 })
+            .setHTML(`<h5>${listing.title}</h5><p>${listing.location}, ${listing.country}</p><p class='small text-muted'>Exact location provided after booking.</p>`);
 
-     </script>
-  </body>
+        new mapboxgl.Marker({ color: "#fe424d" })
+            .setLngLat(listing.geometry.coordinates)
+            .setPopup(popup)
+            .addTo(map)
+            .togglePopup(); // Open details popup by default
+
+        // Map Control Navigation
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Recenter Map Handler
+        document.getElementById("recenter-btn").addEventListener("click", () => {
+            map.flyTo({
+                center: listing.geometry.coordinates,
+                zoom: 12,
+                essential: true
+            });
+        });
+
+        // Client-side dynamic flash message handler
+        function showFlash(message, type = "success") {
+            const container = document.getElementById("main-container") || document.body;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show col-md-8 mt-2 offset-md-2`;
+            alertDiv.setAttribute("role", "alert");
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                    const bsAlert = new bootstrap.Alert(alertDiv);
+                    bsAlert.close();
+                } else {
+                    alertDiv.style.transition = "opacity 0.5s ease";
+                    alertDiv.style.opacity = "0";
+                    setTimeout(() => alertDiv.remove(), 500);
+                }
+            }, 5000);
+        }
+
+        // Detail Page Favorites Trigger
+        async function toggleDetailFav(element) {
+            const id = element.dataset.id;
+            
+            try {
+                const loadingOverlay = document.getElementById("loading-overlay");
+                if (loadingOverlay) loadingOverlay.classList.remove("d-none");
+
+                const response = await fetch(`/listings/${id}/favorite`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                
+                if (loadingOverlay) loadingOverlay.classList.add("d-none");
+
+                if (response.status === 401 || response.redirected) {
+                    window.location.href = "/login";
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    const textSpan = document.getElementById("fav-text");
+                    const icon = element.querySelector("i");
+
+                    if (data.isFavorite) {
+                        element.classList.add("is-fav");
+                        icon.className = "fa-solid fa-heart";
+                        if (textSpan) textSpan.innerText = "Favorited";
+                        showFlash(`${data.title} added to your favorite list`, "success");
+                    } else {
+                        element.classList.remove("is-fav");
+                        icon.className = "fa-regular fa-heart";
+                        if (textSpan) textSpan.innerText = "Add to Favorites";
+                        showFlash(`${data.title} removed from your favorite list`, "danger");
+                    }
+                }
+            } catch (err) {
+                console.error("Error toggling favorite on details page:", err);
+                const loadingOverlay = document.getElementById("loading-overlay");
+                if (loadingOverlay) loadingOverlay.classList.add("d-none");
+            }
+        }
+    </script>
+</body>

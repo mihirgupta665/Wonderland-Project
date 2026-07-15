@@ -1,0 +1,73 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+    .review-edit-container {
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+    }
+    .review-edit-card {
+        background: #fff;
+        border-radius: 1.5rem;
+        padding: 3rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        border: 1px solid #eee;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .btn-update-review {
+        background-color: #fe424d;
+        color: white;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 0.6rem 2.5rem;
+        border: none;
+        transition: background-color 0.2s ease;
+    }
+    .btn-update-review:hover {
+        background-color: #e0303b;
+        color: white;
+    }
+</style>
+
+<body>
+    <div class="row review-edit-container">
+        <div class="col-12">
+            <div class="review-edit-card">
+                <h2 class="fw-bold text-center mb-4"><i class="fa-solid fa-pen-to-square text-danger me-2"></i>Edit Review</h2>
+                <h5>Property: <strong class="text-danger"><%= listing.title %></strong></h5>
+                <hr>
+                
+                <form method="post" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=PUT" novalidate class="needs-validation">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-block">Rating:</label>
+                        <fieldset class="starability-growRotate">
+                            <input type="radio" id="no-rate" class="input-no-rate" name="review[ratings]" value="1" checked aria-label="No rating." />
+                            <input type="radio" id="first-rate1" name="review[ratings]" value="1" <%= review.ratings === 1 ? 'checked' : '' %> />
+                            <label for="first-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[ratings]" value="2" <%= review.ratings === 2 ? 'checked' : '' %> />
+                            <label for="first-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[ratings]" value="3" <%= review.ratings === 3 ? 'checked' : '' %> />
+                            <label for="first-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[ratings]" value="4" <%= review.ratings === 4 ? 'checked' : '' %> />
+                            <label for="first-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[ratings]" value="5" <%= review.ratings === 5 ? 'checked' : '' %> />
+                            <label for="first-rate5" title="Amazing">5 stars</label>
+                        </fieldset>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="comment" class="form-label fw-bold">Comment:</label>
+                        <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" placeholder="Update your comment here..." required style="border-radius: 12px;"><%= review.comment %></textarea>
+                        <div class="valid-feedback">Looks good!</div>
+                        <div class="invalid-feedback">Please write a comment.</div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-update-review shadow-sm"><i class="fa-solid fa-floppy-disk me-2"></i>Update Review</button>
+                        <a href="/listings/<%= listing._id %>" class="btn btn-outline-secondary ms-2" style="border-radius: 20px; padding: 0.6rem 2rem;">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

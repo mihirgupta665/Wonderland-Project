@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Review = require("./review.js");
-const { required, number } = require("joi");
 const Schema = mongoose.Schema;
 
 const listingSchema = new Schema({
@@ -26,40 +25,49 @@ const listingSchema = new Schema({
     price: Number,
     location: String,
     country: String,
+    category: {
+        type: String,
+        enum: ['Trending', 'Rooms', 'Iconic Cities', 'Mountains', 'Castles', 'Pools', 'Camping', 'Farms', 'Arctic'],
+        default: 'Trending'
+    },
+    availability: {
+        type: String,
+        enum: ['Available', 'Booked', 'Rented', 'Unavailable'],
+        default: 'Available'
+    },
+    amenities: {
+        type: [String],
+        default: []
+    },
     reviews: [
         {
             type: Schema.Types.ObjectId,
             ref: "Review"
         }
     ],
-
-    owner : {
-        type : Schema.Types.ObjectId,
-        ref : "User"
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
     },
-    // coordinate : {       // this is not geoJSON we will write all in geoJSON format
-    //     type : [number],
-    //     required: true,
-    // }
-    geometry : {
+    geometry: {
         type: {
             type: String,
             enum: ['Point'],
-            required : true
+            required: true
         },
-        coordinates : {
-            type : [Number],
-            required : true
+        coordinates: {
+            type: [Number],
+            required: true
         }
     }
 });
 
-// mongoose middleware for delete query (post {thenafter} )
+// mongoose middleware for delete query
 listingSchema.post("findOneAndDelete", async (listing) => {
     if (listing) {
         await Review.deleteMany({ _id: { $in: listing.reviews } });
     }
 });
 
-const Listing = mongoose.model("Listing", listingSchema)        // creating the model or collection with corresponding created Schema
-module.exports = Listing;       // exporting the created model or collection.
+const Listing = mongoose.model("Listing", listingSchema);
+module.exports = Listing;

@@ -17,27 +17,20 @@ const Reviews = require("./routes/reviews.js");
 const Users = require("./routes/user.js");
 const session = require("express-session");
 // connect-mongo : is used as session storage
-const MongoStore = require("connect-mongo").default;
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
-// npm i joi is used to validate are schema
-// const passport = require("passport");       // passport is needed for authetication
-// // const LocalStrategy = require("passport-local");        /// it is a class we need local authentication strategy so passport-local is needed
-// const User = require("./models/user.js");       // required the mongoos model of user with has the lpugin of passport-local-mongoose
+// passport is needed for authetication
+// const LocalStrategy = require("passport-local");        /// it is a class we need local authentication strategy so passport-local is needed
+// required the mongoos model of user with has the lpugin of passport-local-mongoose
 const passport = require("passport");
-// const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 // npm i multer is a node.js middleware used to parse multipart/form-data i.e. forms having files uploaded.
-const multer = require("multer");
-let upload = multer({dest : "uploads/ "});
 // npm install @mapbox/mapbox-sdk  : need to be installed its a good mapbox-sdk
-
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-
-
+const compression = require("compression");
+const morgan = require("morgan");
+const { parseNestedBody } = require("./middleware.js");
 
 const app = express();
-
 
 const dbUrl = process.env.ATLAS_DBURL;
 
@@ -46,15 +39,22 @@ mongoose.connect(dbUrl)
         console.log("MongoDB connected");
         console.log("Connected DB:", mongoose.connection.name);
         console.log("Host:", mongoose.connection.host);
-
-        app.listen(8080, () => {
-            console.log("Listening through port : 8080");
-        });
     })
     .catch(err => {
         console.error("Mongo connection error:", err);
     });
 
+if (!process.env.VERCEL) {
+    const port = process.env.PORT || 8080;
+    app.listen(port, () => {
+        console.log(`Listening through port : ${port}`);
+    });
+}
+
+app.use(compression());
+if (process.env.NODE_ENV !== "production") {
+    app.use(morgan("dev"));
+}
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
@@ -62,65 +62,69 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(parseNestedBody); // Parse multipart/urlencoded form bodies to nested structures
 app.use(methodOverride("_method"));
 
-const store = MongoStore.create({           // MongoStore directly stores the sessions in a collection named sessions
-    mongoUrl: dbUrl, // first mongodb database url need to be mentioned, at this the session info will be stroed 
+const store = (MongoStore.default || MongoStore).create({           // MongoStore directly stores the sessions in a collection named sessions
+    mongoUrl: dbUrl, // first mongodb database url need to be mentioned, at this the session info will be stroed
     crypto: {
         secret: process.env.SECRET
     },
     touchAfter: 86400,
 });
-store.on("error", (err)=>{
-    console.log("Error in Mongo Session Store : "+err);
+
+store.on("error", (err) => {
+    console.log("Error in Mongo Session Store : " + err);
 });
 
-app.use(session(
-    {
-        store,  
-        secret: process.env.SECRET, 
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
-            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            httpOnly: true
-        }
+app.use(session({
+    store,
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
     }
-));    // creating session for porject
+}));    // creating session for porject
 
-
+app.use(flash());
 
 // passport need to be initialized.
 // passport must be active for the entire session
 // web application needs an ability to identify users as they browse from one page to another. 
 // This series of request and response each associated with te same user is knwo as session.
-// passport.use(new LocalStrategy(User.authenticate()));   // strategy object is created and the model authentication method is passed to authenticate that model.
-app.use(flash());
-
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ Use LocalStrategy explicitly with User.authenticate()
-passport.use(User.createStrategy());
-
+const LocalStrategy = require("passport-local").Strategy;
+passport.use(new LocalStrategy(async (username, password, done) => {
+    try {
+        const user = await User.findOne({ username: username });
+        if (!user) {
+            return done(null, false, { message: `Incorrect username!` });
+        }
+        
+        const authResult = await user.authenticate(password);
+        if (authResult.error || !authResult.user) {
+            return done(null, false, { message: "Incorrect password!" });
+        }
+        return done(null, authResult.user);
+    } catch (err) {
+        return done(err);
+    }
+}));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
-// DEBUG: see what strategies exist
-// console.log("passport.authenticate typeof:", typeof passport.authenticate);
-// console.log("registered strategies:", passport._strategies);
-// console.log("local strategy:", passport._strategy("local"));
-// console.log("for user");
-// console.log("typeof User.authenticate:", typeof User.authenticate);
-// console.log("User.authenticate():", User.authenticate());
 
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
-    // console.log(req.user);
     res.locals.currUser = req.user;     // as we have done authentication so req.user will always be with us for each session session
-    
+    res.locals.mapToken = process.env.MAP_TOKEN; // Safely pass Mapbox token to templates
     next();
 });
 
@@ -192,3 +196,5 @@ app.use((err, req, res, next) => {
 // signedCookie
 
 // during deployment engine need to be specified with node version so that playform of deployment could understand which version of node to use
+
+module.exports = app;

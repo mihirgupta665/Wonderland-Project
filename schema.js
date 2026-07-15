@@ -1,27 +1,25 @@
-const Joi = require("joi"); // nom i joi is used to validate are schema
+const Joi = require("joi"); // npm i joi is used to validate our schema
 
-
-module.exports.listingSchema = Joi.object({     // object should containt listing
-    listing : Joi.object({
-        title : Joi.string().required(),        // title must be string tyoe and required too.
-        description : Joi.string().required(),
-        // image : Joi.string().allow("", null),       // string could be empty or null     .allow() : is used ot allow certain limitations
+module.exports.listingSchema = Joi.object({
+    listing: Joi.object({
+        title: Joi.string().required(),
+        description: Joi.string().required(),
+        price: Joi.number().required().min(0),
+        location: Joi.string().required(),
+        country: Joi.string().required(),
+        category: Joi.string().valid('Trending', 'Rooms', 'Iconic Cities', 'Mountains', 'Castles', 'Pools', 'Camping', 'Farms', 'Arctic').default('Trending'),
+        availability: Joi.string().valid('Available', 'Booked', 'Rented', 'Unavailable').default('Available'),
+        amenities: Joi.array().items(Joi.string()).optional(),
         image: Joi.object({
             filename: Joi.string().allow("", null).optional(),
-            url: Joi.string().allow("", null).required()
-        }).required(),         // image object may be omitted
-        price : Joi.number().required().min(0),     // min price could only be 0.       .min(x) : is used to set some minimum value for the field
-        location : Joi.string().required(),
-        country : Joi.string().required()
-    }).required(),                  // listing object must be present
+            url: Joi.string().allow("", null).optional()
+        }).optional().allow(null, "")
+    }).required(),
 });
 
-// image dekh lena ek baar
-
-// -> create a joi object which contains the object to validate and that second object  must contain all the field(paramters) of that object
-module.exports.reviewSchema = Joi.object({  // everything in joi is a function      
-    review : Joi.object({
-        comment : Joi.string().required(),
-        ratings : Joi.number().required().min(0).max(5)
+module.exports.reviewSchema = Joi.object({
+    review: Joi.object({
+        comment: Joi.string().required(),
+        ratings: Joi.number().required().min(1).max(5)
     }).required(),
 });

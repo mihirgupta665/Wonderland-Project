@@ -19,9 +19,17 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.17.0/mapbox-gl.js"></script>    
 </head>
 <body>
+    <!-- Global Loading Spinner Overlay -->
+    <div id="loading-overlay" class="loading-overlay d-none">
+        <div class="loader-container">
+            <div class="custom-spinner"></div>
+            <div class="loader-text">Processing request...</div>
+        </div>
+    </div>
+
     <%- include("../includes/navbar.ejs")  -%>
     <!-- <'%'- component -'%'> layout will be followed and then a component can pe passed like this from that ejs file -->
-     <div class="container">
+     <div id="main-container" class="container-fluid px-3 px-md-5">
         <%- include("../includes/flash.ejs") -%>    <!-- includes are written in <%- -%> -->
         <%- body -%>
     </div>

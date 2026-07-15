@@ -1,122 +1,230 @@
-body{
+/* Custom Variables & Global Settings */
+:root {
+    --primary-color: #fe424d;
+    --primary-hover: #e0303b;
+    --dark-color: #222222;
+    --light-color: #f7f7f7;
+    --border-color: #dddddd;
+    --text-muted: #717171;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+body {
     font-family: "Plus Jakarta Sans", sans-serif !important;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
     display: flex;
     flex-direction: column;
-    min-height:100vh;
-}
-.container{
-    flex:1;
-}
-
-.navbar{
-    height : 5rem;
-    background-color: white;
+    min-height: 100vh;
+    background-color: #fafafa;
+    color: var(--dark-color);
 }
 
-.fa-earth-africa{
-    color : rgb(4, 132, 38);
-    font-size: 2rem;
+.container {
+    flex: 1;
+    padding-bottom: 3rem;
 }
 
-.nav-link{
-    color:#222222 !important; /*important is used as it overrides the styling specified by the bootstrap*/
+/* Global Loading Spinner Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
 }
 
-.f-info-links a{
+.loader-container {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 3rem;
+    border-radius: 2rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+}
+
+/* Custom Gradient Rotating Loader */
+.custom-spinner {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, transparent, transparent 40%, var(--primary-color));
+    animation: rotate 1s linear infinite;
+    margin: 0 auto;
+}
+
+.custom-spinner::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    background: #0f172a; /* Slate-900 match */
+    border-radius: 50%;
+}
+
+.custom-spinner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, transparent 40%, var(--primary-color));
+    border-radius: 50%;
+    filter: blur(12px);
+    opacity: 0.85;
+    z-index: -1;
+}
+
+.loader-text {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    letter-spacing: 0.5px;
+    animation: textPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes textPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Skeleton Loading Shimmer */
+.skeleton-card {
+    background: #fff;
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.skeleton-img {
+    aspect-ratio: 4/3;
+    background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 50%, #f2f2f2 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-body {
+    padding: 1rem;
+}
+
+.skeleton-text {
+    height: 1.1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 50%, #f2f2f2 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Footer Design */
+.f-info {
+    height: 8rem;
+    display: flex;
+    background-color: #f1f3f5;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 0;
+}
+
+.f-info-links a {
     text-decoration: none;
-    color:#222222 !important;
+    color: var(--text-muted) !important;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
-.f-info-links a:hover{
+
+.f-info-links a:hover {
+    color: var(--primary-color) !important;
     text-decoration: underline;
-    color:#030303 ;
 }
 
-
-.f-info{
-    height  : 8rem;
-    display : flex;
-    background-color:#ebebeb;
-    flex-wrap:wrap;
-    justify-content:center;
-    align-items:space-evenly;
-    text-align:center;
+.f-info-socials i {
+    margin: 0 0.75rem;
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.f-info-links,
+.f-info-socials i:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
 .f-info-socials, .f-info-brands {
     width: 100%;
     display: flex;
-    align-items : center;
-    justify-content : center;
-}
-.f-info-socials i{
-    margin-right:1rem;
-    font-size: 2rem;
+    align-items: center;
+    justify-content: center;
 }
 
-.listing-card{
+.f-info-brands {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+/* Buttons */
+.btn-danger, .btn-success {
+    border-radius: 20px !important;
+}
+
+/* Alerts and Flash messages overrides */
+.alert {
+    border-radius: 12px !important;
     border: none !important;
-    margin-bottom : 2rem;
-}
-.card-img-top{
-    border-radius: 1rem !important;
-    width: 100% !important;
-    object-fit: cover!important;
-}
-.card-body{
-    padding:0 !important;
+    box-shadow: var(--shadow-sm);
 }
 
-.listing-link{
-    text-decoration: none;
-    color : #222222;
-}
-.listing-link:hover{
-    color : inherit;
-}
-.listing-link:visited{
-    color : inherit;
+/* Form Styles */
+.needs-validation label {
+    margin-bottom: 0.4rem;
 }
 
-.card-img-overlay{
-    opacity:0;
-}
-.card-img-overlay:hover{
-    opacity:0.1;
-    background-color: black;
-    border-radius:1.4rem;
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
 }
 
-.add-btn{
-    background-color:#fe242d !important;
-    border : none !important;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-
-.edit-btn{
-    background-color: #fe242d !important;
-    border: none !important;
-}
-
-/* show route */
-.show-img{
-    height:30vh;
-}
-
-.btns{
-    display:flex;
-}
-
-.show-card{
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-#map {
-    height: 400px;
-    width: 49vw;
-}
-
-

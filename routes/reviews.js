@@ -10,10 +10,15 @@ const { validateReview, isLoggedIn, isReviewAuthor } = require("../middleware.js
 const reviewController = require("../controllers/review.js");
 
 
-router.post("/", isLoggedIn ,validateReview, asyncWrap(reviewController.createReview));
+router.post("/", isLoggedIn, validateReview, asyncWrap(reviewController.createReview));
+
+// edit review route
+router.get("/:reviewId/edit", isLoggedIn, isReviewAuthor, asyncWrap(reviewController.renderEditForm));
+
+// update review route
+router.put("/:reviewId", isLoggedIn, isReviewAuthor, validateReview, asyncWrap(reviewController.updateReview));
 
 // delete review route
-// $pull : this operator is used to remove from an exisitng array all the instances of value or values that matches a specified condition.
 router.delete("/:reviewId", isLoggedIn, isReviewAuthor, asyncWrap(reviewController.deleteReview));
 
 module.exports = router;

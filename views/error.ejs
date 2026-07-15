@@ -1,7 +1,64 @@
-<% layout("/layouts/boilerplate") %>
+<% layout("layouts/boilerplate") %>
 
-<div class="row mt-4">
-    <div class="alert alert-danger custom_error">
-        <h4 class="alert-heading"><%= err.message %></h4>
+<style>
+    .error-container {
+        margin-top: 5rem;
+        margin-bottom: 5rem;
+        text-align: center;
+    }
+    .error-icon {
+        font-size: 5rem;
+        color: #fe424d;
+        margin-bottom: 1.5rem;
+        animation: pulse 2s infinite;
+    }
+    .error-card {
+        background: #fff;
+        border-radius: 1.5rem;
+        padding: 3rem;
+        border: 1px solid #eee;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .btn-home {
+        background-color: #fe424d;
+        color: white;
+        border-radius: 20px;
+        padding: 0.6rem 2rem;
+        font-weight: 600;
+        border: none;
+        transition: background-color 0.2s ease;
+    }
+    .btn-home:hover {
+        background-color: #e0303b;
+        color: white;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="error-container">
+            <div class="error-card">
+                <i class="fa-solid fa-triangle-exclamation error-icon"></i>
+                <h1 class="fw-bold mb-3 text-dark">Something went wrong!</h1>
+                <h4 class="text-danger mb-4"><%= err.message %></h4>
+                
+                <% if(process.env.NODE_ENV !== "production" && err.stack) { %>
+                    <div class="text-start bg-light p-3 rounded mb-4" style="font-family: monospace; font-size: 0.8rem; max-height: 250px; overflow: auto; border: 1px solid #ddd;">
+                        <strong>Stack Trace:</strong>
+                        <pre class="m-0 mt-2 text-wrap"><%= err.stack %></pre>
+                    </div>
+                <% } %>
+
+                <p class="text-muted mb-4">We apologize for the inconvenience. Let's redirect you back to a safe space.</p>
+                <a href="/listings" class="btn btn-home shadow-sm"><i class="fa-solid fa-house me-2"></i>Back to Explore</a>
+            </div>
+        </div>
     </div>
 </div>

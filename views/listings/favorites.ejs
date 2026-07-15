@@ -1,0 +1,273 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+    .favorites-header {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .listing-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .listing-card {
+        border: none !important;
+        border-radius: 1rem !important;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        position: relative;
+        background: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .listing-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    }
+
+    .card-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        aspect-ratio: 4/3;
+    }
+
+    .listing-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .listing-card:hover img {
+        transform: scale(1.06);
+    }
+
+    .btn-favorite {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.2s ease;
+    }
+
+    .btn-favorite:hover {
+        transform: scale(1.1);
+        background: #fff;
+    }
+
+    .btn-favorite i {
+        font-size: 1.1rem;
+        color: #fe424d;
+        transition: color 0.2s ease;
+    }
+
+    .availability-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: white;
+        z-index: 10;
+    }
+    
+    .badge-available { background-color: #2ec4b6; }
+    .badge-booked { background-color: #ff9f1c; }
+    .badge-rented { background-color: #011627; }
+    .badge-unavailable { background-color: #e71d36; }
+
+    .rating-tag {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .rating-tag i {
+        color: #ffb703;
+    }
+
+    .card-body {
+        padding: 0.85rem 0.25rem 0.25rem 0.25rem;
+    }
+
+    .card-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-location {
+        font-size: 0.85rem;
+        color: #717171;
+    }
+
+    .card-price {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #222;
+    }
+</style>
+
+<body>
+    <div class="favorites-header">
+        <h2><i class="fa-solid fa-heart text-danger me-2"></i>My Favorite Bookmarks</h2>
+        <p class="text-muted">A curated collection of your saved dream properties.</p>
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 gy-5" id="favorites-grid">
+        <% if (listings.length === 0) { %>
+            <div id="no-favorites" class="col-12 text-center my-5 py-5">
+                <i class="fa-regular fa-heart text-muted mb-3" style="font-size: 3.5rem;"></i>
+                <h4 class="text-muted">You haven't added any favorites yet!</h4>
+                <a href="/listings" class="btn btn-danger mt-3" style="border-radius: 20px; background-color: #fe424d;">Explore Listings</a>
+            </div>
+        <% } else { %>
+            <% for(let listing of listings){ %>
+                <div class="col listing-col" id="listing-col-<%= listing._id %>">
+                    <a href="/listings/<%=listing._id%>" class="listing-link">
+                        <div class="card listing-card">
+                            <div class="card-img-wrapper">
+                                <!-- Remove Favorite button -->
+                                <button class="btn-favorite" 
+                                        data-id="<%= listing._id %>" 
+                                        onclick="removeFav(event, this)">
+                                    <i class="fa-solid fa-heart"></i>
+                                </button>
+                                
+                                <!-- Availability Badge -->
+                                <span class="availability-badge badge-<%= listing.availability.toLowerCase() %>">
+                                    <%= listing.availability %>
+                                </span>
+
+                                <!-- Star Ratings Overlay -->
+                                <% if(listing.reviews && listing.reviews.length > 0) { %>
+                                    <% 
+                                    let sum = listing.reviews.reduce((s, r) => s + r.ratings, 0);
+                                    let avg = (sum / listing.reviews.length).toFixed(1);
+                                    %>
+                                    <span class="rating-tag">
+                                        <i class="fa-solid fa-star"></i> <%= avg %> (<%= listing.reviews.length %>)
+                                    </span>
+                                <% } %>
+
+                                <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                            </div>
+                            
+                            <div class="card-body">
+                                <h5 class="card-title"><%= listing.title %></h5>
+                                <p class="card-location"><i class="fa-solid fa-location-dot me-1 text-danger"></i><%= listing.location %>, <%= listing.country %></p>
+                                <p class="card-price">
+                                    <span class="fw-bold">&#8377; <%= listing.price.toLocaleString("en-IN") %></span> / night
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
+
+    <!-- Script to dynamically handle unfavoriting cards on the fly -->
+    <script>
+        // Client-side dynamic flash message handler
+        function showFlash(message, type = "success") {
+            const container = document.getElementById("main-container") || document.body;
+            const alertDiv = document.createElement("div");
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show col-md-8 mt-2 offset-md-2`;
+            alertDiv.setAttribute("role", "alert");
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                    const bsAlert = new bootstrap.Alert(alertDiv);
+                    bsAlert.close();
+                } else {
+                    alertDiv.style.transition = "opacity 0.5s ease";
+                    alertDiv.style.opacity = "0";
+                    setTimeout(() => alertDiv.remove(), 500);
+                }
+            }, 5000);
+        }
+
+        async function removeFav(event, element) {
+            event.preventDefault(); // Prevent navigating to the details page
+            const id = element.dataset.id;
+            
+            try {
+                // Show loader
+                const loadingOverlay = document.getElementById("loading-overlay");
+                if (loadingOverlay) loadingOverlay.classList.remove("d-none");
+
+                const response = await fetch(`/listings/${id}/favorite`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                
+                if (loadingOverlay) loadingOverlay.classList.add("d-none");
+
+                const data = await response.json();
+                if (data.success && !data.isFavorite) {
+                    showFlash(`${data.title} removed from your favorite list`, "danger");
+                    // Instantly slide up/fade out listing card from page
+                    const col = document.getElementById(`listing-col-${id}`);
+                    if (col) {
+                        col.style.transition = "all 0.4s ease";
+                        col.style.opacity = "0";
+                        col.style.transform = "scale(0.8)";
+                        setTimeout(() => {
+                            col.remove();
+                            // Check if grid is empty now
+                            const cols = document.querySelectorAll(".listing-col");
+                            if (cols.length === 0) {
+                                document.getElementById("favorites-grid").innerHTML = `
+                                    <div class="col-12 text-center my-5 py-5">
+                                        <i class="fa-regular fa-heart text-muted mb-3" style="font-size: 3.5rem;"></i>
+                                        <h4 class="text-muted">You haven't added any favorites yet!</h4>
+                                        <a href="/listings" class="btn btn-danger mt-3" style="border-radius: 20px; background-color: #fe424d;">Explore Listings</a>
+                                    </div>
+                                `;
+                            }
+                        }, 400);
+                    }
+                }
+            } catch (err) {
+                console.error("Error removing favorite:", err);
+                const loadingOverlay = document.getElementById("loading-overlay");
+                if (loadingOverlay) loadingOverlay.classList.add("d-none");
+            }
+        }
+    </script>
+</body>

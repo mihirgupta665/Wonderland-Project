@@ -3,65 +3,107 @@ const Review = require("./models/review.js");
 const ExpressError = require("./utility/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 
-module.exports.validateListing = (req, res, next) => {
-    // .validate() : the joi object is need to validate the req.body().
-    let { error } = listingSchema.validate(req.body);       // returns a result which may ahev the filed of error (if error exists) 
-    if (error) {
-        // console.log(error);
-        // error contains a property named details which is a  object of message, path, type and context
-        // we could map each element of the detail array and join them using the map function and join function
-        const errorDetails = error.details.map((ele) => ele.message).join(", ");
-        console.log(errorDetails);
-        throw new ExpressError(400, errorDetails);
+// Parses flat multipart keys like listing[title] into nested objects
+module.exports.parseNestedBody = (req, res, next) => {
+    if (req.body) {
+        const nested = {};
+        for (const key in req.body) {
+            const match = key.match(/^(\w+)\[(\w+)\](?:\[(\w+)\])?$/);
+            if (match) {
+                const [_, parent, child, subchild] = match;
+                if (!nested[parent]) nested[parent] = {};
+                if (subchild) {
+                    if (!nested[parent][child]) nested[parent][child] = {};
+                    nested[parent][child][subchild] = req.body[key];
+                } else {
+                    nested[parent][child] = req.body[key];
+                }
+            } else {
+                nested[key] = req.body[key];
+            }
+        }
+        // Merge nested fields into req.body
+        Object.assign(req.body, nested);
     }
-    else {
+    next();
+};
+
+module.exports.validateListing = (req, res, next) => {
+    let { error } = listingSchema.validate(req.body);
+    if (error) {
+        const errorDetails = error.details.map((ele) => ele.message).join(", ");
+        console.error("Listing validation error:", errorDetails);
+        throw new ExpressError(400, errorDetails);
+    } else {
         next();
     }
-}
+};
 
 module.exports.validateReview = (req, res, next) => {
-    let { error } = reviewSchema.validate(req.body);   // the joi schema created validates the req.body
+    let { error } = reviewSchema.validate(req.body);
     if (error) {
         let errmsg = error.details.map((el) => el.message).join(",");
+        console.error("Review validation error:", errmsg);
         throw new ExpressError(400, errmsg);
-    }
-    else {
+    } else {
         next();
     }
-}
+};
 
 module.exports.isLoggedIn = (req, res, next) => {
-    // console.log("user : ", req.user);
-                // rel path        // full path after localhost
-    // console.log(req.path, "..", req.originalUrl);
-    if(!req.isAuthenticated()){
-        // console.log("Original Url : ",req.originalUrl);
-        req.session.returnTo = req.originalUrl;         // saving the originalUrl in the session
-        // console.log(req.session);
+    if (!req.isAuthenticated()) {
+        // Only redirect directly to the requested URL if it was a GET request.
+        // For POST/PUT/DELETE/AJAX operations, redirect the user back to the referring page instead.
+        if (req.method === "GET") {
+            req.session.returnTo = req.originalUrl;
+        } else {
+            req.session.returnTo = req.get("Referrer") || "/listings";
+        }
         req.flash("error", "Please Login to Proceed!");
         return res.redirect("/login");
     }
     next();
-}
+};
 
 module.exports.isOwner = async (req, res, next) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id);
-    // console.log("CurrUser : ",res.locals.currUser);
-    if(!res.locals.currUser || !res.locals.currUser._id.equals(listing.owner._id)){
-        req.flash("error", "You are not the Owner of this Listing!");
-        return res.redirect(`/listings/${id}`);
+    try {
+        let { id } = req.params;
+        let listing = await Listing.findById(id);
+        if (!listing) {
+            req.flash("error", "Listing does not exist!");
+            return res.redirect("/listings");
+        }
+        if (!res.locals.currUser || !listing.owner.equals(res.locals.currUser._id)) {
+            req.flash("error", "You are not the Owner of this Listing!");
+            return res.redirect(`/listings/${id}`);
+        }
+        next();
+    } catch (err) {
+        next(err);
+    }
+};
+
+module.exports.isReviewAuthor = async (req, res, next) => {
+    try {
+        let { id, reviewId } = req.params;
+        let review = await Review.findById(reviewId);
+        if (!review) {
+            req.flash("error", "Review does not exist!");
+            return res.redirect(`/listings/${id}`);
+        }
+        if (!res.locals.currUser || !review.author.equals(res.locals.currUser._id)) {
+            req.flash("error", "You are not the author of this review!");
+            return res.redirect(`/listings/${id}`);
+        }
+        next();
+    } catch (err) {
+        next(err);
+    }
+};
+
+module.exports.saveRedirectUrl = (req, res, next) => {
+    if (req.session.returnTo) {
+        res.locals.saveRedirect = req.session.returnTo;
     }
     next();
-}
-
-module.exports.isReviewAuthor = async(req, res, next) => {
-    let {id, reviewId} = req.params;
-    let review = await Review.findById(reviewId);
-    // console.log(review);
-    if(!review.author.equals(res.locals.currUser._id)){
-        req.flash("error", "You are not the author of this review");
-        return res.redirect(`/listings/${id}`);
-    }
-    next()
-}
+};

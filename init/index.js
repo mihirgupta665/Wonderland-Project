@@ -1,19 +1,60 @@
 const mongoose = require("mongoose");
 const initdata = require("./data.js");
 const Listing = require("../models/listing.js");
-// async function main(){
-//     // await mongoose.connect("mongodb://127.0.0.1:27017/wonderland");
-// }
-// main();
+const User = require("../models/user.js");
+const Review = require("../models/review.js");
+const path = require("path");
 
-async function initializeDB(){
-    console.log("Initializing MongoDB...");
-    // await Listing.deleteMany({});
-    // to add miscellaneous property in object use map function   ...obj to desrtucture object then commaa sapareted properties to add on more propertities.
-    initdata.data = initdata.data.map((obj) => ({ ...obj, owner: "693996aadc081af45a556770" }) );
-    await Listing.insertMany(initdata.data);
-    console.log("Initialized MongoDB database");
+// Load environment variables from .env in the parent directory
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
+
+const dbUrl = process.env.ATLAS_DBURL;
+
+if (!dbUrl) {
+    console.error("Error: ATLAS_DBURL is not defined in the environment variables.");
+    process.exit(1);
 }
+
+async function initializeDB() {
+    try {
+        console.log("Connecting to MongoDB Atlas...");
+        await mongoose.connect(dbUrl);
+        console.log("Connected to database successfully!");
+
+        // Safely clear database collections
+        console.log("Cleaning up old collections...");
+        await Listing.deleteMany({});
+        await Review.deleteMany({});
+        await User.deleteMany({});
+        console.log("Database cleared.");
+
+        // Register default owner user (admin/admin123)
+        console.log("Registering default admin owner user...");
+        const adminUser = new User({
+            email: "admin@wonderland.com",
+            username: "admin"
+        });
+        const registeredAdmin = await User.register(adminUser, "admin123");
+        console.log("Default admin owner registered. ID:", registeredAdmin._id);
+
+        // Assign the registered owner's ID to every listing
+        const finalData = initdata.data.map((obj) => ({
+            ...obj,
+            owner: registeredAdmin._id
+        }));
+
+        // Seed listings
+        console.log("Seeding sample listings into MongoDB Atlas...");
+        await Listing.insertMany(finalData);
+        console.log("Sample listings inserted successfully!");
+
+    } catch (error) {
+        console.error("Error during database seeding:", error);
+    } finally {
+        // Disconnect mongoose
+        mongoose.connection.close();
+        console.log("Mongoose connection closed.");
+    }
+}
+
 initializeDB();
-
-
