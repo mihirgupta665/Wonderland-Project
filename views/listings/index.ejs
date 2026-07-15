@@ -34,6 +34,7 @@
         cursor: pointer;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         min-width: 60px;
+        flex-shrink: 0;
         color: #222;
         text-decoration: none !important;
     }
@@ -85,6 +86,21 @@
     .form-switch .form-check-input:checked {
         background-color: #fe424d;
         border-color: #fe424d;
+    }
+
+    @media (max-width: 768px) {
+        .filter-pills-container {
+            max-width: 100%;
+            width: 100%;
+            padding-bottom: 0.75rem;
+        }
+        .controls-container {
+            width: 100%;
+            justify-content: space-between;
+        }
+        #sort-select {
+            flex-grow: 1;
+        }
     }
 
     /* Listing Cards Styling */

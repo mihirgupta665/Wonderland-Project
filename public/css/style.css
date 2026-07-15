@@ -154,7 +154,7 @@ body {
 
 /* Footer Design */
 .f-info {
-    height: 8rem;
+    min-height: 8rem;
     display: flex;
     background-color: #f1f3f5;
     flex-wrap: wrap;
@@ -162,7 +162,7 @@ body {
     align-items: center;
     text-align: center;
     border-top: 1px solid var(--border-color);
-    padding: 1rem 0;
+    padding: 1.5rem 1rem;
 }
 
 .f-info-links a {

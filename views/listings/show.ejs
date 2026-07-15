@@ -27,6 +27,7 @@
         flex-wrap: wrap;
         margin-top: 1.5rem;
         margin-bottom: 1rem;
+        gap: 1rem;
     }
 
     /* Favorites button on details page */
@@ -86,6 +87,15 @@
         border-radius: 1.5rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         border: 1px solid #eee;
+    }
+
+    @media (max-width: 575.98px) {
+        .detail-container {
+            padding: 1.25rem 1rem;
+        }
+        #map {
+            height: 250px;
+        }
     }
 
     /* Review stats styling */

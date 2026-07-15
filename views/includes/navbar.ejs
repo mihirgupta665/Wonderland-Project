@@ -1,6 +1,6 @@
 <style>
     .navbar {
-        height: 5rem;
+        min-height: 5rem;
         background-color: #fff !important;
         box-shadow: 0 1px 2px rgba(0,0,0,0.08);
     }
@@ -29,6 +29,7 @@
         font-size: 0.9rem;
         min-width: 250px;
         border: 1px solid #ddd;
+        transition: all 0.2s ease;
     }
     .input-search:focus {
         border-color: #fe424d;
@@ -46,6 +47,34 @@
     }
     .btn-search:hover {
         background-color: #e0303b;
+    }
+
+    @media (max-width: 767.98px) {
+        .navbar-collapse {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .navbar-nav {
+            align-items: stretch !important;
+            gap: 0.5rem;
+        }
+        .nav-link {
+            padding: 0.75rem 0.5rem !important;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .navbar-nav .btn {
+            margin-top: 0.5rem;
+            text-align: center;
+            width: 100%;
+            justify-content: center;
+        }
+        .input-search {
+            min-width: unset;
+            width: 100%;
+        }
+        .navbar-nav form {
+            width: 100%;
+        }
     }
 </style>
 
