@@ -1,6 +1,3 @@
-<!-- ========================================================= -->
-<!--                     HERO BANNER                           -->
-<!-- ========================================================= -->
 
 <p align="center">
   <img src="./assets/banner.png" alt="Wonderland Hero Banner" width="100%">
@@ -30,8 +27,8 @@ Discover unique stays • Explore destinations • Host unforgettable experience
 
 &nbsp;
 
-<a href="#">
-<img src="https://img.shields.io/badge/🎥%20Project%20Demo-Coming%20Soon-red?style=for-the-badge">
+<a href="https://github.com/mihirgupta665/Wonderland-Project/releases/download/v1.0.0/Wonderland_Demo.mp4">
+<img src="https://img.shields.io/badge/🎥%20Project%20Demo-Watch%20Now-red?style=for-the-badge">
 </a>
 
 </p>
@@ -51,19 +48,31 @@ Discover unique stays • Explore destinations • Host unforgettable experience
 
 # 🌍 Live Demo
 
-Experience the complete Wonderland platform online, including authentication, property management, interactive maps, image uploads, reviews, and favorites.
+Experience the complete Wonderland platform, including secure authentication, property management, interactive maps, image uploads, reviews, favorites, and responsive design.
 
-### 🔗 Live Application
+### 🚀 Live Application
 
-> https://wonderland-8sm7.onrender.com
+<p align="center">
+  <a href="https://wonderland-8sm7.onrender.com">
+    <img src="https://img.shields.io/badge/🌍%20Open%20Wonderland-Live%20Demo-fe424d?style=for-the-badge" alt="Live Demo">
+  </a>
+</p>
+
+<p align="center">
+  <strong>
+    <a href="https://wonderland-8sm7.onrender.com">
+      https://wonderland-8sm7.onrender.com
+    </a>
+  </strong>
+</p>
 
 ### 🔑 Demo Account
 
 | Username | Password |
-|----------|----------|
+|:---------:|:--------:|
 | **admin** | **admin123** |
 
-> This account can be used to explore landlord capabilities such as creating, editing, and deleting listings.
+> **Note:** Use this account to explore landlord features such as creating, editing, and deleting property listings.
 
 ---
 
@@ -113,169 +122,127 @@ Built using the **MVC architecture**, the application integrates **MongoDB Atlas
 
 # 📸 Project Showcase
 
-> **Note**
->
-> Replace the placeholder images below with the final high-resolution screenshots after completing the project assets.
+> A glimpse of the key workflows and user experience offered by Wonderland.
 
 ---
 
-## 🏠 Home Page
+# 🏠 Core Experience
+
+## Home Page
 
 <p align="center">
-
-<img src="assets/screenshots/home.png" width="95%" alt="Home Page"/>
-
+<img src="./assets/screenshots/01-home.png" width="95%">
 </p>
-
-The landing page introduces users to featured destinations with category filters, responsive navigation, and a modern travel-inspired interface.
 
 ---
 
-## 🏡 Explore Listings
+## Explore Listings
 
 <p align="center">
-
-<img src="assets/screenshots/listings.png" width="95%" alt="Listings"/>
-
+<img src="./assets/screenshots/02-listings.png" width="95%">
 </p>
-
-Browse properties across multiple categories including Trending, Rooms, Mountains, Farms, Pools, Castles, Arctic, Camping, and more.
 
 ---
 
-## 📄 Property Details
+## Reviews & Comments
 
 <p align="center">
-
-<img src="assets/screenshots/property-details.png" width="95%" alt="Property Details"/>
-
+<img src="./assets/screenshots/03-reviews_comments.png" width="95%">
 </p>
-
-View property information including gallery, pricing, amenities, reviews, owner information, and an interactive location map.
 
 ---
 
-## 🗺️ Interactive Map
+## Interactive Map
 
 <p align="center">
-
-<img src="assets/screenshots/map.png" width="95%" alt="Map"/>
-
+<img src="./assets/screenshots/04-map.png" width="95%">
 </p>
-
-Every property includes an interactive Mapbox map with custom markers and location visualization.
 
 ---
 
-## ❤️ Favorites
+# ❤️ User Experience
+
+## Smart Search
 
 <p align="center">
-
-<img src="assets/screenshots/favorites.png" width="95%" alt="Favorites"/>
-
+<img src="./assets/screenshots/05-search.png" width="95%">
 </p>
-
-Users can bookmark their favorite properties and manage them from a dedicated Favorites page.
 
 ---
 
-## ➕ Create Listing
+## Favorites
 
 <p align="center">
-
-<img src="assets/screenshots/create-listing.png" width="95%" alt="Create Listing"/>
-
+<img src="./assets/screenshots/06-favorites.png" width="95%">
 </p>
-
-Landlords can create new listings with automatic address geocoding and Cloudinary image uploads.
 
 ---
 
-## ✏️ Edit Listing
+# 🏡 Host Experience
+
+## Create Listing
 
 <p align="center">
-
-<img src="assets/screenshots/edit-listing.png" width="95%" alt="Edit Listing"/>
-
+<img src="./assets/screenshots/07-create-listing.png" width="95%">
 </p>
-
-Listing owners can securely update property details, pricing, categories, and images.
 
 ---
 
-## ⭐ Reviews & Ratings
+## Edit Listing
 
 <p align="center">
-
-<img src="assets/screenshots/reviews.png" width="95%" alt="Reviews"/>
-
+<img src="./assets/screenshots/08-edit-listing.png" width="95%">
 </p>
-
-Visitors can leave ratings and reviews while owners retain full control over their listings.
 
 ---
 
-## 📱 Responsive Design
+## User Registration
 
 <p align="center">
-
-<img src="assets/screenshots/mobile.png" width="45%" alt="Responsive"/>
-
+<img src="./assets/screenshots/09-signup.png" width="95%">
 </p>
-
-Wonderland is fully responsive across desktop, tablet, and mobile devices.
 
 ---
 
-# 🎥 Demo GIF
+# 📱 Responsive Design
 
-> **Placeholder**
->
-> Replace this section with a 20–30 second walkthrough GIF showcasing the core application flow.
+## Mobile Home
 
 <p align="center">
-
-<img src="assets/demo.gif" width="100%" alt="Project Demo GIF"/>
-
+<img src="./assets/screenshots/10-mobile-home.png" width="40%">
 </p>
 
-**Suggested Flow**
+---
 
-- Landing Page
-- Browse Listings
-- Search Property
-- View Details
-- Login
-- Create Listing
-- Upload Image
-- Add to Favorites
-- Edit Listing
-- Leave Review
+## Mobile Property Details
+
+<p align="center">
+<img src="./assets/screenshots/11-mobile-details.png" width="40%">
+</p>
+
+---
+
+# 🎥 Project Demonstration
+
+A quick walkthrough of **Wonderland**, showcasing the complete user journey—from exploring properties to managing listings and interacting with key platform features.
+
+<p align="center">
+  <img src="./assets/demo.gif" alt="Wonderland Project Demo" width="95%">
+</p>
 
 ---
 
 # 🎬 Project Walkthrough
 
-> Replace the placeholder link below after uploading your walkthrough video.
+Watch the complete walkthrough of **Wonderland**, covering the application's architecture, user workflow, authentication, listing management, favorites, reviews, interactive maps, and responsive design.
 
 <p align="center">
 
-[![Watch Demo](https://img.shields.io/badge/▶️%20Watch%20Project%20Demo-red?style=for-the-badge)](https://youtu.be/YOUR_VIDEO_LINK)
+<a href="https://github.com/mihirgupta665/Wonderland-Project/releases/download/v1.0.0/Wonderland_Demo.mp4">
+  <img src="https://img.shields.io/badge/🎥%20Watch%20Full%20Project%20Demo-181717?style=for-the-badge&logo=github&logoColor=white" alt="Watch Wonderland Demo">
+</a>
 
 </p>
-
-The walkthrough should cover:
-
-- Project Overview
-- Authentication
-- Property Management
-- Search & Filtering
-- Favorites
-- Reviews
-- Interactive Maps
-- Cloudinary Uploads
-- Responsive Design
-- Deployment
 
 ---
 
