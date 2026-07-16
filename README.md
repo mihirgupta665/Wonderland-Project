@@ -547,8 +547,7 @@ Passionate Full-Stack & AI Developer focused on building scalable, user-centric 
 ### Connect With Me
 
 - 🌐 **GitHub:** https://github.com/mihirgupta665
-- 💼 **LinkedIn:** https://www.linkedin.com/in/YOUR-LINKEDIN
-- 🌍 **Portfolio:** https://YOUR-PORTFOLIO-LINK
+- 💼 **LinkedIn:** https://www.linkedin.com/in/mihir-gupta-980173299/
 
 ---
 
