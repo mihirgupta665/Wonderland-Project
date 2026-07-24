@@ -170,6 +170,7 @@ app.use((req, res, next) => {
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;     // as we have done authentication so req.user will always be with us for each session session
     res.locals.mapToken = process.env.MAP_TOKEN; // Safely pass Mapbox token to templates
+    res.locals.backendUrl = process.env.BACKEND_URL || '';
     next();
 });
 

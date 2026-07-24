@@ -41,4 +41,12 @@
     window.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // Silently wake up the Render backend in the background if configured
+    if (window.BACKEND_URL) {
+        const cleanUrl = window.BACKEND_URL.replace(/\/$/, '');
+        fetch(`${cleanUrl}/ping`, { mode: 'no-cors' })
+            .then(() => console.log('Render backend wake-up ping dispatched successfully.'))
+            .catch(err => console.warn('Render backend wake-up ping failed:', err));
+    }
 })();
